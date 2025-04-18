@@ -12,6 +12,7 @@ the OpenStack [Load Balancing as a Service](https://docs.openstack.org/mitaka/ne
 
 Main features include:
 
+* Virtual Pools and IPs
 * Services, used to define a Load Balancing service.
 * Load Balancing Listeners
 * Load Balancing Pools
@@ -32,8 +33,8 @@ The installation of NetBox Load Balancing requires a Python interpreter and a wo
 NetBox Load Balancing is compatible with the following NetBox versions.
 
 | NetBox Version | NetBox Load Balancing Version |
-|----------------|------------------------------|
-| NetBox 4.2     | \>= 1.0.0                    |
+|----------------|-------------------------------|
+| NetBox 4.2     | \>= 1.0.1                     |
 
 
 ### Installation of NetBox Load Balancing
@@ -116,7 +117,7 @@ These assignment objects are:
 
 * LBServiceAssignment -> VirtualIP, Device and VirtualDeviceContext
 * VirtualIPPool -> IPRange or Prefix
-* PoolAssignment -> VirtualIPPool
+* PoolAssignment -> LBService
 * HealthMonitorAssignment -> Pool
 * MemberAssignment -> Pool and HealthMonitor
 
@@ -154,7 +155,7 @@ IP Ranges
 ### Pool, Member and Health Monitor Associations
 
 Pools can be associated to an LBService.
-Members can be associated with a Pool or which a Health Monitor.
+Members can be associated with a Pool or with a Health Monitor.
 Health Monitors can be associated with a Pool.
 
 The same principle applies as with other associations and this is performed from the relevant view.
@@ -263,7 +264,7 @@ Services
 ### Load Balancing Listeners, Pools and Members
 
 In Netbox Load Balancing, a pool can have 1 or more listeners. 
-It can also be assigned to one or more IP Ranges.
+It can also be assigned to one or more Load Balancing Services.
 
 Load Balancing pool assignments are stored within the PoolAssignment table.
 

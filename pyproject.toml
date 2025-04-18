@@ -1,6 +1,6 @@
 [project]
 name = "netbox-load-balancing"
-version = "1.0.1"
+version = "1.0.2"
 description = "NetBox Load Balancing is a NetBox plugin that models a Load Balancing service based on the OpenStack SLB modelling"
 authors = [
     {name="Andy Wilson", email="andy@shady.org"},

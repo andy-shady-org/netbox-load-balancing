@@ -152,6 +152,8 @@ class VirtualIPFiterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 1)
         params = {"address": [str(self.addresses[3].address)]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 1)
+
+    def test_virtual_pool(self):
         params = {"virtual_pool_id": [self.pools[0].pk]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
         params = {"virtual_pool": [self.pools[0].name]}

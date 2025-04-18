@@ -84,23 +84,33 @@ class PoolFiterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
         params = {"listener": [self.listeners[0].name, self.listeners[1].pk]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 3)
 
-    def test_defaults(self):
+    def test_algorythm(self):
         params = {"algorythm": [PoolAlgorythmChoices.LEAST_CONNECTION]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
         params = {"algorythm": [PoolAlgorythmChoices.ROUND_ROBIN]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 1)
+
+    def test_backup_persistence(self):
         params = {"backup_persistence": [PoolBackupSessionPersistenceChoices.NONE]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
         params = {"backup_persistence": [PoolBackupSessionPersistenceChoices.SOURCE_IP]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 1)
+
+    def test_session_persistence(self):
         params = {"session_persistence": [PoolSessionPersistenceChoices.SOURCE_IP]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
         params = {"session_persistence": [PoolSessionPersistenceChoices.SSL_BRIDGE]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 1)
+
+    def test_persistence_timeout(self):
         params = {"persistence_timeout": [0]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 3)
+
+    def test_backup_timeout(self):
         params = {"backup_timeout": [0]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 3)
+
+    def test_member_port(self):
         params = {"member_port": [1]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 1)
         params = {"member_port": [2]}
