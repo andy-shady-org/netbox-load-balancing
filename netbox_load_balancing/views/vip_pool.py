@@ -37,8 +37,7 @@ class VirtualIPPoolView(generic.ObjectView):
 
     def get_extra_context(self, request, instance):
         virtual_ip_table = VirtualIPTable(
-            instance.virtualip_related.all(), orderable=False,
-            exclude=('virtual_pool',)
+            instance.virtualip_related.all(), orderable=False, exclude=("virtual_pool",)
         )
         virtual_ip_table.configure(request)
         return {

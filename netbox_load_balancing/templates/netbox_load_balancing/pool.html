@@ -51,6 +51,16 @@
                 </tr>
             </table>
         </div>
+        <div class="card">
+            {% if listener_table.rows|length == 1 %}
+                <h2 class="card-header">{% trans "Listener" %}</h2>
+            {% else %}
+                <h2 class="card-header">{% trans "Listeners" %}</h2>
+            {% endif %}
+            <div class="table-responsive">
+                {% render_table listener_table 'inc/table.html' %}
+            </div>
+        </div>
         {% include 'inc/panels/custom_fields.html' %}
         {% plugin_left_page object %}
     </div>
