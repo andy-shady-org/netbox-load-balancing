@@ -38,18 +38,22 @@
                 {% endif %}
             </table>
         </div>
-                <div class="card">
-            <h5 class="card-header">
-                {% trans "Listeners" %}
-            </h5>
-            {% render_table virtual_ip_table 'inc/table.html' %}
+        <div class="card">
+            {% if virtual_ip_table.rows|length == 1 %}
+                <h2 class="card-header">{% trans "Virtual IP" %}</h2>
+            {% else %}
+                <h2 class="card-header">{% trans "Virtual IPs" %}</h2>
+            {% endif %}
+            <div class="table-responsive">
+                {% render_table virtual_ip_table 'inc/table.html' %}
+            </div>
         </div>
         {% include 'inc/panels/custom_fields.html' %}
         {% plugin_left_page object %}
     </div>
     <div class="col col-md-6">
-        {% include 'inc/panels/tags.html' %}
         {% include 'inc/panels/comments.html' %}
+        {% include 'inc/panels/tags.html' %}
         {% plugin_right_page object %}
     </div>
     {% plugin_full_width_page object %}
