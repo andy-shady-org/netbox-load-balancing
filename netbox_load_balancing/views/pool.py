@@ -37,6 +37,7 @@ class PoolView(generic.ObjectView):
 
     def get_extra_context(self, request, instance):
         listener_table = ListenerTable(instance.listeners.all(), orderable=False)
+        listener_table.configure(request)
         return {
             "listener_table": listener_table,
         }
