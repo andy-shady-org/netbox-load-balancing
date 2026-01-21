@@ -12,7 +12,6 @@ from netbox_load_balancing.forms import (
     ListenerImportForm,
 )
 
-
 __all__ = (
     "ListenerView",
     "ListenerListView",

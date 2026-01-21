@@ -2,10 +2,10 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 
 from netbox.forms import (
-    NetBoxModelBulkEditForm,
-    NetBoxModelForm,
-    NetBoxModelImportForm,
-    NetBoxModelFilterSetForm,
+    PrimaryModelBulkEditForm,
+    PrimaryModelFilterSetForm,
+    PrimaryModelImportForm,
+    PrimaryModelForm,
 )
 
 from utilities.forms.rendering import FieldSet
@@ -21,7 +21,6 @@ from utilities.forms.fields import (
 from netbox_load_balancing.models import Listener, LBService
 from netbox_load_balancing.choices import ListenerProtocolChoices
 
-
 __all__ = (
     "ListenerForm",
     "ListenerFilterForm",
@@ -30,7 +29,7 @@ __all__ = (
 )
 
 
-class ListenerForm(NetBoxModelForm):
+class ListenerForm(PrimaryModelForm):
     name = forms.CharField(max_length=255, required=True)
     service = DynamicModelChoiceField(
         queryset=LBService.objects.all(),
@@ -124,6 +123,7 @@ class ListenerForm(NetBoxModelForm):
         model = Listener
         fields = [
             "name",
+            "owner",
             "description",
             "service",
             "port",
@@ -143,10 +143,10 @@ class ListenerForm(NetBoxModelForm):
         ]
 
 
-class ListenerFilterForm(NetBoxModelFilterSetForm):
+class ListenerFilterForm(PrimaryModelFilterSetForm):
     model = Listener
     fieldsets = (
-        FieldSet("q", "filter_id", "tag"),
+        FieldSet("q", "filter_id", "tag", "owner_id"),
         FieldSet("service", name=_("LB Service")),
         FieldSet(
             "port",
@@ -230,7 +230,7 @@ class ListenerFilterForm(NetBoxModelFilterSetForm):
     tags = TagFilterField(model)
 
 
-class ListenerImportForm(NetBoxModelImportForm):
+class ListenerImportForm(PrimaryModelImportForm):
     service = CSVModelChoiceField(
         queryset=LBService.objects.all(),
         required=False,
@@ -301,6 +301,7 @@ class ListenerImportForm(NetBoxModelImportForm):
         model = Listener
         fields = (
             "name",
+            "owner",
             "description",
             "service",
             "port",
@@ -319,7 +320,7 @@ class ListenerImportForm(NetBoxModelImportForm):
         )
 
 
-class ListenerBulkEditForm(NetBoxModelBulkEditForm):
+class ListenerBulkEditForm(PrimaryModelBulkEditForm):
     model = Listener
     description = forms.CharField(max_length=200, required=False)
     service = DynamicModelMultipleChoiceField(

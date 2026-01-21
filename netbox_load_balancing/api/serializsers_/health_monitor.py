@@ -6,31 +6,23 @@ from rest_framework.serializers import (
     JSONField,
     BooleanField,
     IntegerField,
-    ChoiceField,
     ListField,
 )
 from drf_spectacular.utils import extend_schema_field
 from netbox.api.fields import ContentTypeField
-from netbox.api.serializers import NetBoxModelSerializer
+from netbox.api.serializers import NetBoxModelSerializer, PrimaryModelSerializer
 from utilities.api import get_serializer_for_model
 
 from netbox_load_balancing.models import HealthMonitor, HealthMonitorAssignment
-from netbox_load_balancing.choices import (
-    HealthMonitorTypeChoices,
-    HealthMonitorHTTPVersionChoices,
-)
 
 
-class HealthMonitorSerializer(NetBoxModelSerializer):
+class HealthMonitorSerializer(PrimaryModelSerializer):
     url = HyperlinkedIdentityField(
         view_name="plugins-api:netbox_load_balancing-api:healthmonitor-detail"
     )
-    type = ChoiceField(choices=HealthMonitorTypeChoices, required=False)
     monitor_port = IntegerField(
         required=True, validators=[MinValueValidator(1), MaxValueValidator(65534)]
     )
-    http_version = ChoiceField(choices=HealthMonitorHTTPVersionChoices, required=False)
-    http_secure = BooleanField(required=False, default=False)
     http_response_codes = ListField(
         child=IntegerField(),
         required=False,

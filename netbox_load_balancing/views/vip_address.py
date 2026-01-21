@@ -12,7 +12,6 @@ from netbox_load_balancing.forms import (
     VirtualIPImportForm,
 )
 
-
 __all__ = (
     "VirtualIPView",
     "VirtualIPListView",

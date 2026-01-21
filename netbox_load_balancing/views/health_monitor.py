@@ -16,7 +16,6 @@ from netbox_load_balancing.forms import (
     HealthMonitorImportForm,
 )
 
-
 __all__ = (
     "HealthMonitorView",
     "HealthMonitorListView",

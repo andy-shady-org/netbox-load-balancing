@@ -2,10 +2,10 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 
 from netbox.forms import (
-    NetBoxModelBulkEditForm,
-    NetBoxModelForm,
-    NetBoxModelImportForm,
-    NetBoxModelFilterSetForm,
+    PrimaryModelBulkEditForm,
+    PrimaryModelFilterSetForm,
+    PrimaryModelImportForm,
+    PrimaryModelForm,
 )
 
 from utilities.forms.rendering import FieldSet, ObjectAttribute
@@ -23,7 +23,6 @@ from netbox_load_balancing.models import (
     MemberAssignment,
 )
 
-
 __all__ = (
     "MemberForm",
     "MemberFilterForm",
@@ -33,7 +32,7 @@ __all__ = (
 )
 
 
-class MemberForm(NetBoxModelForm):
+class MemberForm(PrimaryModelForm):
     name = forms.CharField(max_length=255, required=True)
     ip_address = DynamicModelChoiceField(
         queryset=IPAddress.objects.all(),
@@ -59,6 +58,7 @@ class MemberForm(NetBoxModelForm):
         model = Member
         fields = [
             "name",
+            "owner",
             "description",
             "disabled",
             "ip_address",
@@ -68,10 +68,10 @@ class MemberForm(NetBoxModelForm):
         ]
 
 
-class MemberFilterForm(NetBoxModelFilterSetForm):
+class MemberFilterForm(PrimaryModelFilterSetForm):
     model = Member
     fieldsets = (
-        FieldSet("q", "filter_id", "tag"),
+        FieldSet("q", "filter_id", "tag", "owner_id"),
         FieldSet("name", "ip_address", "reference", "disabled", name=_("LB Member")),
     )
     ip_address = DynamicModelMultipleChoiceField(
@@ -84,7 +84,7 @@ class MemberFilterForm(NetBoxModelFilterSetForm):
     tags = TagFilterField(model)
 
 
-class MemberImportForm(NetBoxModelImportForm):
+class MemberImportForm(PrimaryModelImportForm):
     name = forms.CharField(max_length=255, required=True)
     ip_address = CSVModelChoiceField(
         queryset=IPAddress.objects.all(),
@@ -98,6 +98,7 @@ class MemberImportForm(NetBoxModelImportForm):
         model = Member
         fields = (
             "name",
+            "owner",
             "ip_address",
             "reference",
             "description",
@@ -106,7 +107,7 @@ class MemberImportForm(NetBoxModelImportForm):
         )
 
 
-class MemberBulkEditForm(NetBoxModelBulkEditForm):
+class MemberBulkEditForm(PrimaryModelBulkEditForm):
     model = Member
     description = forms.CharField(max_length=200, required=False)
     disabled = forms.BooleanField(required=False)

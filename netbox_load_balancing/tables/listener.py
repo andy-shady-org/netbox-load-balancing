@@ -5,7 +5,6 @@ from netbox.tables.columns import TagColumn
 
 from netbox_load_balancing.models import Listener
 
-
 __all__ = ("ListenerTable",)
 
 

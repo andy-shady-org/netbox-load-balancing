@@ -10,7 +10,6 @@ from netbox.search import SearchIndex, register_search
 from netbox_load_balancing.models import Pool, HealthMonitor
 from netbox_load_balancing.constants import MEMBER_ASSIGNMENT_MODELS
 
-
 _all__ = ("Member", "MemberAssignment", "MemberIndex")
 
 

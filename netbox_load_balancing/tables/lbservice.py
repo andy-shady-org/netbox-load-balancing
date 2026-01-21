@@ -7,7 +7,6 @@ from tenancy.tables import TenancyColumnsMixin
 
 from netbox_load_balancing.models import LBService, LBServiceAssignment
 
-
 __all__ = (
     "LBServiceTable",
     "LBServiceAssignmentTable",

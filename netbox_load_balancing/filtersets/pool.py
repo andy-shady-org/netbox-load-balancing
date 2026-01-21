@@ -2,12 +2,13 @@ import django_filters
 from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
-from netbox.filtersets import NetBoxModelFilterSet
+from netbox.filtersets import NetBoxModelFilterSet, PrimaryModelFilterSet
 from utilities.filters import (
     ContentTypeFilter,
     MultiValueCharFilter,
     MultiValueNumberFilter,
 )
+from utilities.filtersets import register_filterset
 
 from ipam.models import IPRange
 
@@ -23,7 +24,8 @@ from netbox_load_balancing.choices import (
 )
 
 
-class PoolFilterSet(NetBoxModelFilterSet):
+@register_filterset
+class PoolFilterSet(PrimaryModelFilterSet):
     listener_id = django_filters.ModelMultipleChoiceFilter(
         queryset=Listener.objects.all(),
         field_name="listeners",

@@ -2,10 +2,10 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 
 from netbox.forms import (
-    NetBoxModelBulkEditForm,
-    NetBoxModelForm,
-    NetBoxModelImportForm,
-    NetBoxModelFilterSetForm,
+    PrimaryModelBulkEditForm,
+    PrimaryModelFilterSetForm,
+    PrimaryModelImportForm,
+    PrimaryModelForm,
 )
 
 from tenancy.forms import TenancyForm, TenancyFilterForm
@@ -33,7 +33,7 @@ __all__ = (
 )
 
 
-class VirtualIPPoolForm(TenancyForm, NetBoxModelForm):
+class VirtualIPPoolForm(TenancyForm, PrimaryModelForm):
     name = forms.CharField(max_length=255, required=True)
     description = forms.CharField(max_length=200, required=False)
     disabled = forms.BooleanField(required=False)
@@ -48,6 +48,7 @@ class VirtualIPPoolForm(TenancyForm, NetBoxModelForm):
         model = VirtualIPPool
         fields = [
             "name",
+            "owner",
             "description",
             "disabled",
             "tenant_group",
@@ -57,17 +58,17 @@ class VirtualIPPoolForm(TenancyForm, NetBoxModelForm):
         ]
 
 
-class VirtualIPPoolFilterForm(TenancyFilterForm, NetBoxModelFilterSetForm):
+class VirtualIPPoolFilterForm(TenancyFilterForm, PrimaryModelFilterSetForm):
     model = VirtualIPPool
     fieldsets = (
-        FieldSet("q", "filter_id", "tag"),
+        FieldSet("q", "filter_id", "tag", "owner_id"),
         FieldSet("name", name=_("Virtual IP Pool")),
         FieldSet("tenant_group_id", "tenant_id", name=_("Tenancy")),
     )
     tags = TagFilterField(model)
 
 
-class VirtualIPPoolImportForm(NetBoxModelImportForm):
+class VirtualIPPoolImportForm(PrimaryModelImportForm):
     tenant = CSVModelChoiceField(
         queryset=Tenant.objects.all(),
         required=False,
@@ -79,6 +80,7 @@ class VirtualIPPoolImportForm(NetBoxModelImportForm):
         model = VirtualIPPool
         fields = (
             "name",
+            "owner",
             "description",
             "disabled",
             "tenant",
@@ -86,7 +88,7 @@ class VirtualIPPoolImportForm(NetBoxModelImportForm):
         )
 
 
-class VirtualIPPoolBulkEditForm(NetBoxModelBulkEditForm):
+class VirtualIPPoolBulkEditForm(PrimaryModelBulkEditForm):
     model = VirtualIPPool
     description = forms.CharField(max_length=200, required=False)
     disabled = forms.BooleanField(required=False)

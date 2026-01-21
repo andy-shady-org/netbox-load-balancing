@@ -2,10 +2,10 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 
 from netbox.forms import (
-    NetBoxModelBulkEditForm,
-    NetBoxModelForm,
-    NetBoxModelImportForm,
-    NetBoxModelFilterSetForm,
+    PrimaryModelBulkEditForm,
+    PrimaryModelFilterSetForm,
+    PrimaryModelImportForm,
+    PrimaryModelForm,
 )
 
 from tenancy.forms import TenancyForm, TenancyFilterForm
@@ -33,7 +33,7 @@ __all__ = (
 )
 
 
-class LBServiceForm(TenancyForm, NetBoxModelForm):
+class LBServiceForm(TenancyForm, PrimaryModelForm):
     name = forms.CharField(max_length=255, required=True)
     reference = forms.CharField(max_length=255, required=True)
     description = forms.CharField(max_length=200, required=False)
@@ -49,6 +49,7 @@ class LBServiceForm(TenancyForm, NetBoxModelForm):
         model = LBService
         fields = [
             "name",
+            "owner",
             "reference",
             "description",
             "disabled",
@@ -59,17 +60,17 @@ class LBServiceForm(TenancyForm, NetBoxModelForm):
         ]
 
 
-class LBServiceFilterForm(TenancyFilterForm, NetBoxModelFilterSetForm):
+class LBServiceFilterForm(TenancyFilterForm, PrimaryModelFilterSetForm):
     model = LBService
     fieldsets = (
-        FieldSet("q", "filter_id", "tag"),
+        FieldSet("q", "filter_id", "tag", "owner_id"),
         FieldSet("name", "reference", name=_("LB Service")),
         FieldSet("tenant_group_id", "tenant_id", name=_("Tenancy")),
     )
     tags = TagFilterField(model)
 
 
-class LBServiceImportForm(NetBoxModelImportForm):
+class LBServiceImportForm(PrimaryModelImportForm):
     tenant = CSVModelChoiceField(
         queryset=Tenant.objects.all(),
         required=False,
@@ -81,6 +82,7 @@ class LBServiceImportForm(NetBoxModelImportForm):
         model = LBService
         fields = (
             "name",
+            "owner",
             "reference",
             "description",
             "disabled",
@@ -89,7 +91,7 @@ class LBServiceImportForm(NetBoxModelImportForm):
         )
 
 
-class LBServiceBulkEditForm(NetBoxModelBulkEditForm):
+class LBServiceBulkEditForm(PrimaryModelBulkEditForm):
     model = LBService
     reference = forms.CharField(max_length=255, required=False)
     description = forms.CharField(max_length=200, required=False)

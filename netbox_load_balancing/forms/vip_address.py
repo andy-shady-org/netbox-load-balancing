@@ -3,10 +3,10 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import gettext_lazy as _
 
 from netbox.forms import (
-    NetBoxModelBulkEditForm,
-    NetBoxModelForm,
-    NetBoxModelImportForm,
-    NetBoxModelFilterSetForm,
+    PrimaryModelBulkEditForm,
+    PrimaryModelFilterSetForm,
+    PrimaryModelImportForm,
+    PrimaryModelForm,
 )
 
 from utilities.forms.rendering import FieldSet
@@ -33,7 +33,7 @@ __all__ = (
 )
 
 
-class VirtualIPForm(NetBoxModelForm):
+class VirtualIPForm(PrimaryModelForm):
     name = forms.CharField(max_length=255, required=True)
     dns_name = forms.CharField(max_length=255, required=False, label=_("DNS name"))
     virtual_pool = DynamicModelChoiceField(
@@ -65,6 +65,7 @@ class VirtualIPForm(NetBoxModelForm):
         model = VirtualIP
         fields = [
             "name",
+            "owner",
             "dns_name",
             "route_health_injection",
             "description",
@@ -149,10 +150,10 @@ class VirtualIPForm(NetBoxModelForm):
         return self.cleaned_data
 
 
-class VirtualIPFilterForm(NetBoxModelFilterSetForm):
+class VirtualIPFilterForm(PrimaryModelFilterSetForm):
     model = VirtualIP
     fieldsets = (
-        FieldSet("q", "filter_id", "tag"),
+        FieldSet("q", "filter_id", "tag", "owner_id"),
         FieldSet(
             "name",
             "dns_name",
@@ -176,7 +177,7 @@ class VirtualIPFilterForm(NetBoxModelFilterSetForm):
     tags = TagFilterField(model)
 
 
-class VirtualIPImportForm(NetBoxModelImportForm):
+class VirtualIPImportForm(PrimaryModelImportForm):
     name = forms.CharField(max_length=255, required=True)
     dns_name = forms.CharField(max_length=255, required=False, label=_("DNS name"))
     virtual_pool = CSVModelChoiceField(
@@ -198,6 +199,7 @@ class VirtualIPImportForm(NetBoxModelImportForm):
         model = VirtualIP
         fields = (
             "name",
+            "owner",
             "dns_name",
             "address",
             "virtual_pool",
@@ -277,7 +279,7 @@ class VirtualIPImportForm(NetBoxModelImportForm):
         return self.cleaned_data
 
 
-class VirtualIPBulkEditForm(NetBoxModelBulkEditForm):
+class VirtualIPBulkEditForm(PrimaryModelBulkEditForm):
     model = VirtualIP
     dns_name = forms.CharField(max_length=255, required=False, label=_("DNS name"))
     description = forms.CharField(max_length=200, required=False)

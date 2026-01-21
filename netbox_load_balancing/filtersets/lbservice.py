@@ -2,13 +2,14 @@ import django_filters
 from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
-from netbox.filtersets import NetBoxModelFilterSet
+from netbox.filtersets import NetBoxModelFilterSet, PrimaryModelFilterSet
 from tenancy.filtersets import TenancyFilterSet
 from utilities.filters import (
     ContentTypeFilter,
     MultiValueCharFilter,
     MultiValueNumberFilter,
 )
+from utilities.filtersets import register_filterset
 
 from netbox_load_balancing.models import VirtualIP
 
@@ -18,7 +19,8 @@ from netbox_load_balancing.models import (
 )
 
 
-class LBServiceFilterSet(TenancyFilterSet, NetBoxModelFilterSet):
+@register_filterset
+class LBServiceFilterSet(TenancyFilterSet, PrimaryModelFilterSet):
     disabled = django_filters.BooleanFilter()
 
     class Meta:

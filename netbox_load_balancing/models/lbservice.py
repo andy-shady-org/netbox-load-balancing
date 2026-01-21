@@ -11,7 +11,6 @@ from netbox.search import SearchIndex, register_search
 from netbox_load_balancing.constants import SERVICE_ASSIGNMENT_MODELS
 from netbox_load_balancing.models import VirtualIP
 
-
 _all__ = ("LBService", "LBServiceAssignment", "ServiceIndex")
 
 

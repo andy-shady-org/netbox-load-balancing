@@ -11,7 +11,6 @@ from netbox.tables.columns import (
 
 from netbox_load_balancing.models import HealthMonitor, HealthMonitorAssignment
 
-
 __all__ = (
     "HealthMonitorTable",
     "HealthMonitorAssignmentTable",

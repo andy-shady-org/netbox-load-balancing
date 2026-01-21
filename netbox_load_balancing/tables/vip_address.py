@@ -6,7 +6,6 @@ from tenancy.tables import TenancyColumnsMixin
 
 from netbox_load_balancing.models import VirtualIP
 
-
 __all__ = ("VirtualIPTable",)
 
 

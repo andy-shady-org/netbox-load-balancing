@@ -2,12 +2,11 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 
 from netbox.forms import (
-    NetBoxModelBulkEditForm,
-    NetBoxModelForm,
-    NetBoxModelImportForm,
-    NetBoxModelFilterSetForm,
+    PrimaryModelBulkEditForm,
+    PrimaryModelFilterSetForm,
+    PrimaryModelImportForm,
+    PrimaryModelForm,
 )
-
 from utilities.forms.rendering import FieldSet, ObjectAttribute
 from utilities.forms.fields import (
     DynamicModelChoiceField,
@@ -27,7 +26,6 @@ from netbox_load_balancing.choices import (
     HealthMonitorHTTPVersionChoices,
 )
 
-
 __all__ = (
     "HealthMonitorForm",
     "HealthMonitorFilterForm",
@@ -37,7 +35,7 @@ __all__ = (
 )
 
 
-class HealthMonitorForm(NetBoxModelForm):
+class HealthMonitorForm(PrimaryModelForm):
     name = forms.CharField(max_length=255, required=True)
     description = forms.CharField(max_length=200, required=False)
     type = forms.ChoiceField(choices=HealthMonitorTypeChoices, required=True)
@@ -95,6 +93,7 @@ class HealthMonitorForm(NetBoxModelForm):
         model = HealthMonitor
         fields = [
             "name",
+            "owner",
             "description",
             "type",
             "disabled",
@@ -113,10 +112,10 @@ class HealthMonitorForm(NetBoxModelForm):
         ]
 
 
-class HealthMonitorFilterForm(NetBoxModelFilterSetForm):
+class HealthMonitorFilterForm(PrimaryModelFilterSetForm):
     model = HealthMonitor
     fieldsets = (
-        FieldSet("q", "filter_id", "tag"),
+        FieldSet("q", "filter_id", "tag", "owner_id"),
         FieldSet("name", "type", "http_version", name=_("HealthMonitor")),
     )
     type = forms.ChoiceField(choices=HealthMonitorTypeChoices, required=False)
@@ -128,7 +127,7 @@ class HealthMonitorFilterForm(NetBoxModelFilterSetForm):
     tags = TagFilterField(model)
 
 
-class HealthMonitorImportForm(NetBoxModelImportForm):
+class HealthMonitorImportForm(PrimaryModelImportForm):
     name = forms.CharField(max_length=255, required=True)
     type = CSVChoiceField(choices=HealthMonitorTypeChoices, required=False)
     description = forms.CharField(max_length=200, required=False)
@@ -167,6 +166,7 @@ class HealthMonitorImportForm(NetBoxModelImportForm):
         model = HealthMonitor
         fields = (
             "name",
+            "owner",
             "description",
             "type",
             "disabled",
@@ -184,7 +184,7 @@ class HealthMonitorImportForm(NetBoxModelImportForm):
         )
 
 
-class HealthMonitorBulkEditForm(NetBoxModelBulkEditForm):
+class HealthMonitorBulkEditForm(PrimaryModelBulkEditForm):
     model = HealthMonitor
     type = forms.ChoiceField(choices=HealthMonitorTypeChoices, required=False)
     description = forms.CharField(max_length=200, required=False)
