@@ -16,7 +16,6 @@ from netbox_load_balancing.forms import (
     MemberImportForm,
 )
 
-
 __all__ = (
     "MemberView",
     "MemberListView",

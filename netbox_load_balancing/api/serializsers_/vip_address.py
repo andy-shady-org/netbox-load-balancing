@@ -5,7 +5,7 @@ from rest_framework.serializers import (
     CharField,
     ValidationError,
 )
-from netbox.api.serializers import NetBoxModelSerializer
+from netbox.api.serializers import PrimaryModelSerializer
 from ipam.api.serializers import IPAddressSerializer
 
 from ipam.models import IPAddress
@@ -13,7 +13,7 @@ from netbox_load_balancing.api.serializers import VirtualIPPoolSerializer
 from netbox_load_balancing.models import VirtualIP, VirtualIPPool
 
 
-class VirtualIPSerializer(NetBoxModelSerializer):
+class VirtualIPSerializer(PrimaryModelSerializer):
     url = HyperlinkedIdentityField(
         view_name="plugins-api:netbox_load_balancing-api:virtualip-detail"
     )

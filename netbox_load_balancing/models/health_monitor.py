@@ -15,7 +15,6 @@ from netbox_load_balancing.choices import (
     HealthMonitorHTTPVersionChoices,
 )
 
-
 _all__ = ("HealthMonitor", "HealthMonitorAssignment", "HealthMonitorIndex")
 
 

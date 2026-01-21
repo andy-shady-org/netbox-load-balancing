@@ -3,7 +3,7 @@ from typing import Annotated, List
 import strawberry
 import strawberry_django
 
-from netbox.graphql.types import NetBoxObjectType
+from netbox.graphql.types import PrimaryObjectType
 from ipam.graphql.types import IPAddressType
 from tenancy.graphql.types import TenantType
 
@@ -31,7 +31,7 @@ from .filters import (
 @strawberry_django.type(
     LBService, fields="__all__", filters=NetBoxLoadBalancingLBServiceFilter
 )
-class NetBoxLoadBalancingLBServiceType(NetBoxObjectType):
+class NetBoxLoadBalancingLBServiceType(PrimaryObjectType):
     tenant: Annotated["TenantType", strawberry.lazy("tenancy.graphql.types")] | None
     name: str
     reference: str
@@ -41,7 +41,7 @@ class NetBoxLoadBalancingLBServiceType(NetBoxObjectType):
 @strawberry_django.type(
     Listener, fields="__all__", filters=NetBoxLoadBalancingListenerFilter
 )
-class NetBoxLoadBalancingListenerType(NetBoxObjectType):
+class NetBoxLoadBalancingListenerType(PrimaryObjectType):
     name: str
     service: (
         Annotated[
@@ -67,7 +67,7 @@ class NetBoxLoadBalancingListenerType(NetBoxObjectType):
 @strawberry_django.type(
     HealthMonitor, fields="__all__", filters=NetBoxLoadBalancingHealthMonitorFilter
 )
-class NetBoxLoadBalancingHealthMonitorType(NetBoxObjectType):
+class NetBoxLoadBalancingHealthMonitorType(PrimaryObjectType):
     name: str
     template: str | None
     type: str
@@ -84,7 +84,7 @@ class NetBoxLoadBalancingHealthMonitorType(NetBoxObjectType):
 
 
 @strawberry_django.type(Pool, fields="__all__", filters=NetBoxLoadBalancingPoolFilter)
-class NetBoxLoadBalancingPoolType(NetBoxObjectType):
+class NetBoxLoadBalancingPoolType(PrimaryObjectType):
     listeners: (
         List[
             Annotated[
@@ -107,7 +107,7 @@ class NetBoxLoadBalancingPoolType(NetBoxObjectType):
 @strawberry_django.type(
     Member, fields="__all__", filters=NetBoxLoadBalancingMemberFilter
 )
-class NetBoxLoadBalancingMemberType(NetBoxObjectType):
+class NetBoxLoadBalancingMemberType(PrimaryObjectType):
     ip_address: Annotated["IPAddressType", strawberry.lazy("ipam.graphql.types")] | None
     name: str
     reference: str
@@ -117,7 +117,7 @@ class NetBoxLoadBalancingMemberType(NetBoxObjectType):
 @strawberry_django.type(
     VirtualIPPool, fields="__all__", filters=NetBoxLoadBalancingVirtualIPPoolFilter
 )
-class NetBoxLoadBalancingVirtualIPPoolType(NetBoxObjectType):
+class NetBoxLoadBalancingVirtualIPPoolType(PrimaryObjectType):
     tenant: Annotated["TenantType", strawberry.lazy("tenancy.graphql.types")] | None
     name: str
     disabled: bool
@@ -126,7 +126,7 @@ class NetBoxLoadBalancingVirtualIPPoolType(NetBoxObjectType):
 @strawberry_django.type(
     VirtualIP, fields="__all__", filters=NetBoxLoadBalancingVirtualIPFilter
 )
-class NetBoxLoadBalancingVirtualIPType(NetBoxObjectType):
+class NetBoxLoadBalancingVirtualIPType(PrimaryObjectType):
     virtual_pool: (
         Annotated[
             "NetBoxLoadBalancingVirtualIPPoolType",

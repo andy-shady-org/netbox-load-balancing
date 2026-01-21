@@ -2,10 +2,10 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 
 from netbox.forms import (
-    NetBoxModelBulkEditForm,
-    NetBoxModelForm,
-    NetBoxModelImportForm,
-    NetBoxModelFilterSetForm,
+    PrimaryModelBulkEditForm,
+    PrimaryModelFilterSetForm,
+    PrimaryModelImportForm,
+    PrimaryModelForm,
 )
 
 from utilities.forms.rendering import FieldSet, ObjectAttribute
@@ -30,7 +30,6 @@ from netbox_load_balancing.choices import (
     PoolBackupSessionPersistenceChoices,
 )
 
-
 __all__ = (
     "PoolForm",
     "PoolFilterForm",
@@ -40,7 +39,7 @@ __all__ = (
 )
 
 
-class PoolForm(NetBoxModelForm):
+class PoolForm(PrimaryModelForm):
     name = forms.CharField(max_length=255, required=True)
     description = forms.CharField(max_length=200, required=False)
     disabled = forms.BooleanField(required=False)
@@ -95,6 +94,7 @@ class PoolForm(NetBoxModelForm):
         model = Pool
         fields = [
             "name",
+            "owner",
             "description",
             "disabled",
             "listeners",
@@ -109,10 +109,10 @@ class PoolForm(NetBoxModelForm):
         ]
 
 
-class PoolFilterForm(NetBoxModelFilterSetForm):
+class PoolFilterForm(PrimaryModelFilterSetForm):
     model = Pool
     fieldsets = (
-        FieldSet("q", "filter_id", "tag"),
+        FieldSet("q", "filter_id", "tag", "owner_id"),
         FieldSet(
             "name",
             "listeners",
@@ -136,7 +136,7 @@ class PoolFilterForm(NetBoxModelFilterSetForm):
     tags = TagFilterField(model)
 
 
-class PoolImportForm(NetBoxModelImportForm):
+class PoolImportForm(PrimaryModelImportForm):
     listeners = CSVModelMultipleChoiceField(
         queryset=Listener.objects.all(),
         required=False,
@@ -176,6 +176,7 @@ class PoolImportForm(NetBoxModelImportForm):
         model = Pool
         fields = (
             "name",
+            "owner",
             "description",
             "disabled",
             "listeners",
@@ -189,7 +190,7 @@ class PoolImportForm(NetBoxModelImportForm):
         )
 
 
-class PoolBulkEditForm(NetBoxModelBulkEditForm):
+class PoolBulkEditForm(PrimaryModelBulkEditForm):
     model = Pool
     description = forms.CharField(max_length=200, required=False)
     disabled = forms.BooleanField(required=False)

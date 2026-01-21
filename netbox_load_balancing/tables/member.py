@@ -6,7 +6,6 @@ from netbox.tables.columns import TagColumn, ActionsColumn
 
 from netbox_load_balancing.models import Member, MemberAssignment
 
-
 __all__ = (
     "MemberTable",
     "MemberAssignmentTable",

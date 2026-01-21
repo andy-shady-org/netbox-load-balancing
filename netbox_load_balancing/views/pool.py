@@ -16,7 +16,6 @@ from netbox_load_balancing.forms import (
     PoolImportForm,
 )
 
-
 __all__ = (
     "PoolView",
     "PoolListView",

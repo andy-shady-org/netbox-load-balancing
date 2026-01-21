@@ -12,7 +12,7 @@ class LoadBalancingConfig(PluginConfig):
     author_email = "andy@shady.org"
     base_url = "netbox-load-balancing"
     required_settings = []
-    min_version = "4.4.0"
+    min_version = "4.5.0"
     default_settings = {
         "top_level_menu": True,
         "service_ext_page": "right",

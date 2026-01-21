@@ -11,7 +11,6 @@ from tenancy.tables import TenancyColumnsMixin
 
 from netbox_load_balancing.models import VirtualIPPool, VirtualIPPoolAssignment
 
-
 __all__ = (
     "VirtualIPPoolTable",
     "VirtualIPPoolAssignmentTable",

@@ -6,23 +6,17 @@ from rest_framework.serializers import (
     JSONField,
     BooleanField,
     IntegerField,
-    ChoiceField,
 )
 from drf_spectacular.utils import extend_schema_field
 from netbox.api.fields import ContentTypeField
-from netbox.api.serializers import NetBoxModelSerializer
+from netbox.api.serializers import NetBoxModelSerializer, PrimaryModelSerializer
 from utilities.api import get_serializer_for_model
 
 from netbox_load_balancing.models import Pool, PoolAssignment
-from netbox_load_balancing.choices import (
-    PoolAlgorythmChoices,
-    PoolSessionPersistenceChoices,
-    PoolBackupSessionPersistenceChoices,
-)
 from netbox_load_balancing.api.serializers import ListenerSerializer
 
 
-class PoolSerializer(NetBoxModelSerializer):
+class PoolSerializer(PrimaryModelSerializer):
     url = HyperlinkedIdentityField(
         view_name="plugins-api:netbox_load_balancing-api:pool-detail"
     )
@@ -32,13 +26,6 @@ class PoolSerializer(NetBoxModelSerializer):
     backup_timeout = IntegerField(required=False, default=0)
     member_port = IntegerField(
         required=False, validators=[MinValueValidator(1), MaxValueValidator(65535)]
-    )
-    algorythm = ChoiceField(choices=PoolAlgorythmChoices, required=False)
-    session_persistence = ChoiceField(
-        choices=PoolSessionPersistenceChoices, required=False
-    )
-    backup_persistence = ChoiceField(
-        choices=PoolBackupSessionPersistenceChoices, required=False
     )
 
     class Meta:

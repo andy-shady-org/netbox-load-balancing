@@ -2,16 +2,15 @@ from rest_framework.serializers import (
     HyperlinkedIdentityField,
     BooleanField,
     IntegerField,
-    ChoiceField,
 )
-from netbox.api.serializers import NetBoxModelSerializer
+from netbox.api.serializers import PrimaryModelSerializer
 
 from netbox_load_balancing.api.serializers import LBServiceSerializer
 from netbox_load_balancing.models import Listener
 from netbox_load_balancing.choices import ListenerProtocolChoices
 
 
-class ListenerSerializer(NetBoxModelSerializer):
+class ListenerSerializer(PrimaryModelSerializer):
     url = HyperlinkedIdentityField(
         view_name="plugins-api:netbox_load_balancing-api:listener-detail"
     )
@@ -27,7 +26,6 @@ class ListenerSerializer(NetBoxModelSerializer):
     surge_protection = BooleanField(required=False, default=False)
     tcp_buffering = BooleanField(required=False, default=False)
     compression = BooleanField(required=False, default=False)
-    protocol = ChoiceField(choices=ListenerProtocolChoices, required=False)
 
     class Meta:
         model = Listener

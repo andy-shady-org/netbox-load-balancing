@@ -2,12 +2,13 @@ import django_filters
 from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
-from netbox.filtersets import NetBoxModelFilterSet
+from netbox.filtersets import NetBoxModelFilterSet, PrimaryModelFilterSet
 from utilities.filters import (
     ContentTypeFilter,
     MultiValueCharFilter,
     MultiValueNumberFilter,
 )
+from utilities.filtersets import register_filterset
 
 from ipam.models import IPAddress
 
@@ -19,7 +20,8 @@ from netbox_load_balancing.models import (
 )
 
 
-class MemberFilterSet(NetBoxModelFilterSet):
+@register_filterset
+class MemberFilterSet(PrimaryModelFilterSet):
     ip_address_id = django_filters.ModelMultipleChoiceFilter(
         queryset=IPAddress.objects.all(),
         field_name="ip_address",

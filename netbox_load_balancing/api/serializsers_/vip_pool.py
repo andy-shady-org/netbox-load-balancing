@@ -8,14 +8,14 @@ from rest_framework.serializers import (
 )
 from drf_spectacular.utils import extend_schema_field
 from netbox.api.fields import ContentTypeField
-from netbox.api.serializers import NetBoxModelSerializer
+from netbox.api.serializers import NetBoxModelSerializer, PrimaryModelSerializer
 from utilities.api import get_serializer_for_model
 from tenancy.api.serializers import TenantSerializer
 
 from netbox_load_balancing.models import VirtualIPPool, VirtualIPPoolAssignment
 
 
-class VirtualIPPoolSerializer(NetBoxModelSerializer):
+class VirtualIPPoolSerializer(PrimaryModelSerializer):
     url = HyperlinkedIdentityField(
         view_name="plugins-api:netbox_load_balancing-api:virtualippool-detail"
     )

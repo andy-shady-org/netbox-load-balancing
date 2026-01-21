@@ -1,13 +1,15 @@
 import django_filters
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
-from netbox.filtersets import NetBoxModelFilterSet
+from netbox.filtersets import PrimaryModelFilterSet
+from utilities.filtersets import register_filterset
 
 from netbox_load_balancing.models import Listener, LBService, Pool
 from netbox_load_balancing.choices import ListenerProtocolChoices
 
 
-class ListenerFilterSet(NetBoxModelFilterSet):
+@register_filterset
+class ListenerFilterSet(PrimaryModelFilterSet):
     pool_id = django_filters.ModelMultipleChoiceFilter(
         queryset=Pool.objects.all(),
         field_name="pool_listeners",

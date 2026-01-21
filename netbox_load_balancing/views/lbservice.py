@@ -16,7 +16,6 @@ from netbox_load_balancing.forms import (
     LBServiceImportForm,
 )
 
-
 __all__ = (
     "LBServiceView",
     "LBServiceListView",

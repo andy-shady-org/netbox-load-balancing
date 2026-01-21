@@ -8,7 +8,6 @@ from netbox.search import SearchIndex, register_search
 
 from netbox_load_balancing.choices import ListenerProtocolChoices
 
-
 _all__ = ("Listener", "ListenerIndex")
 
 

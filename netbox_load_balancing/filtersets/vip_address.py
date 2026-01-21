@@ -1,7 +1,8 @@
 import django_filters
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
-from netbox.filtersets import NetBoxModelFilterSet
+from netbox.filtersets import NetBoxModelFilterSet, PrimaryModelFilterSet
+from utilities.filtersets import register_filterset
 
 from ipam.models import IPAddress
 
@@ -11,7 +12,8 @@ from netbox_load_balancing.models import (
 )
 
 
-class VirtualIPFilterSet(NetBoxModelFilterSet):
+@register_filterset
+class VirtualIPFilterSet(PrimaryModelFilterSet):
     disabled = django_filters.BooleanFilter()
     route_health_injection = django_filters.BooleanFilter()
     virtual_pool_id = django_filters.ModelMultipleChoiceFilter(

@@ -2,13 +2,14 @@ import django_filters
 from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
-from netbox.filtersets import NetBoxModelFilterSet
+from netbox.filtersets import NetBoxModelFilterSet, PrimaryModelFilterSet
 from utilities.filters import (
     ContentTypeFilter,
     MultiValueCharFilter,
     MultiValueNumberFilter,
     NumericArrayFilter,
 )
+from utilities.filtersets import register_filterset
 
 from netbox_load_balancing.models import (
     HealthMonitor,
@@ -21,7 +22,8 @@ from netbox_load_balancing.choices import (
 )
 
 
-class HealthMonitorFilterSet(NetBoxModelFilterSet):
+@register_filterset
+class HealthMonitorFilterSet(PrimaryModelFilterSet):
     type = django_filters.MultipleChoiceFilter(
         choices=HealthMonitorTypeChoices,
         required=False,
