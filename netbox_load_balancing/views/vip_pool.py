@@ -4,10 +4,19 @@ from django.shortcuts import get_object_or_404
 from netbox.views import generic
 from utilities.views import register_model_view
 
-from netbox_load_balancing.tables import VirtualIPPoolTable, VirtualIPTable
+from ipam.tables import PrefixTable, VLANTable, IPRangeTable
+from ipam.models import Prefix, VLAN, IPRange
+
+from netbox_load_balancing.tables import (
+    VirtualIPPoolTable,
+    VirtualIPTable,
+)
 from netbox_load_balancing.filtersets import VirtualIPPoolFilterSet
 
-from netbox_load_balancing.models import VirtualIPPool, VirtualIPPoolAssignment
+from netbox_load_balancing.models import (
+    VirtualIPPool,
+    VirtualIPPoolAssignment,
+)
 from netbox_load_balancing.forms import (
     VirtualIPPoolFilterForm,
     VirtualIPPoolForm,
@@ -39,8 +48,30 @@ class VirtualIPPoolView(generic.ObjectView):
             instance.virtualip_related.all(), orderable=False, exclude=("virtual_pool",)
         )
         virtual_ip_table.configure(request)
+
+        prefix_assignments_table = PrefixTable(
+            Prefix.objects.filter(vip_pools__virtual_pool=instance),
+            orderable=False,
+        )
+        prefix_assignments_table.configure(request)
+
+        vlan_assignments_table = VLANTable(
+            VLAN.objects.filter(vip_pools__virtual_pool=instance),
+            orderable=False,
+        )
+        vlan_assignments_table.configure(request)
+
+        iprange_assignments_table = IPRangeTable(
+            IPRange.objects.filter(vip_pools__virtual_pool=instance),
+            orderable=False,
+        )
+        iprange_assignments_table.configure(request)
+
         return {
             "virtual_ip_table": virtual_ip_table,
+            "prefix_assignments_table": prefix_assignments_table,
+            "vlan_assignments_table": vlan_assignments_table,
+            "iprange_assignments_table": iprange_assignments_table,
         }
 
 

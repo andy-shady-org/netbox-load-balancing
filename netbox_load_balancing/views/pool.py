@@ -4,10 +4,10 @@ from django.shortcuts import get_object_or_404
 from netbox.views import generic
 from utilities.views import register_model_view
 
-from netbox_load_balancing.tables import PoolTable, ListenerTable
+from netbox_load_balancing.tables import PoolTable, ListenerTable, LBServiceTable
 from netbox_load_balancing.filtersets import PoolFilterSet
 
-from netbox_load_balancing.models import Pool, PoolAssignment
+from netbox_load_balancing.models import Pool, PoolAssignment, LBService
 from netbox_load_balancing.forms import (
     PoolFilterForm,
     PoolForm,
@@ -37,8 +37,14 @@ class PoolView(generic.ObjectView):
     def get_extra_context(self, request, instance):
         listener_table = ListenerTable(instance.listeners.all(), orderable=False)
         listener_table.configure(request)
+        service_assignments_table = LBServiceTable(
+            LBService.objects.filter(pools__pool=instance),
+            orderable=False,
+        )
+        service_assignments_table.configure(request)
         return {
             "listener_table": listener_table,
+            "service_assignments_table": service_assignments_table,
         }
 
 

@@ -6,8 +6,13 @@ from utilities.views import register_model_view
 
 from dcim.models import Device, VirtualDeviceContext
 from virtualization.models import VirtualMachine
+from dcim.tables import DeviceTable, VirtualDeviceContextTable
+from virtualization.tables import VirtualMachineTable
 
-from netbox_load_balancing.tables import LBServiceTable
+from netbox_load_balancing.tables import (
+    LBServiceTable,
+    VirtualIPTable,
+)
 from netbox_load_balancing.filtersets import LBServiceFilterSet
 
 from netbox_load_balancing.models import LBService, LBServiceAssignment, VirtualIP
@@ -36,6 +41,37 @@ __all__ = (
 class LBServiceView(generic.ObjectView):
     queryset = LBService.objects.all()
     template_name = "netbox_load_balancing/lbservice.html"
+
+    def get_extra_context(self, request, instance):
+        vip_assignments_table = VirtualIPTable(
+            VirtualIP.objects.filter(lbservices__service=instance),
+            orderable=False,
+        )
+        vip_assignments_table.configure(request)
+
+        device_assignments_table = DeviceTable(
+            Device.objects.filter(lbservices__service=instance),
+            orderable=False,
+        )
+        device_assignments_table.configure(request)
+
+        virtual_device_assignments_table = VirtualDeviceContextTable(
+            VirtualDeviceContext.objects.filter(lbservices__service=instance),
+            orderable=False,
+        )
+        virtual_device_assignments_table.configure(request)
+
+        virtual_machine_assignments_table = VirtualMachineTable(
+            VirtualMachine.objects.filter(lbservices__service=instance),
+            orderable=False,
+        )
+        virtual_machine_assignments_table.configure(request)
+        return {
+            "vip_assignment_table": vip_assignments_table,
+            "device_assignments_table": device_assignments_table,
+            "virtual_device_assignments_table": virtual_device_assignments_table,
+            "virtual_machine_assignments_table": virtual_machine_assignments_table,
+        }
 
 
 @register_model_view(LBService, "list", path="", detail=False)
