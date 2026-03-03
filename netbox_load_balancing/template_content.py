@@ -1,4 +1,5 @@
 from dcim.models import Device, VirtualDeviceContext
+from virtualization.models import VirtualMachine
 from netbox.plugins import PluginTemplateExtension
 from ipam.models import Prefix, IPRange
 
@@ -27,6 +28,7 @@ class VirtualIPContextInfo(PluginTemplateExtension):
         "netbox_load_balancing.virtualip",
         "dcim.device",
         "dcim.virtualdevicecontext",
+        "virtualization.virtualmachine",
     ]
 
     def right_page(self):
@@ -51,6 +53,8 @@ class VirtualIPContextInfo(PluginTemplateExtension):
         obj = self.context["object"]
         if isinstance(obj, Device):
             service_lists = LBServiceAssignment.objects.filter(device=obj)
+        elif isinstance(obj, VirtualMachine):
+            service_lists = LBServiceAssignment.objects.filter(virtualmachine=obj)
         elif isinstance(obj, VirtualDeviceContext):
             service_lists = LBServiceAssignment.objects.filter(virtualdevicecontext=obj)
         elif isinstance(obj, VirtualIP):

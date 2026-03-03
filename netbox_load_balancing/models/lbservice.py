@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 
 from dcim.models import Device, VirtualDeviceContext
+from virtualization.models import VirtualMachine
 from netbox.models import PrimaryModel, NetBoxModel
 from netbox.models.features import ContactsMixin
 from netbox.search import SearchIndex, register_search
@@ -62,9 +63,6 @@ class LBServiceAssignment(NetBoxModel):
     clone_fields = ("assigned_object_type", "assigned_object_id")
 
     prerequisite_models = (
-        "dcim.Device",
-        "dcim.VirtualDeviceContext",
-        "netbox_load_balancing.VirtualIP",
         "netbox_load_balancing.LBService",
     )
 
@@ -111,6 +109,13 @@ GenericRelation(
     object_id_field="assigned_object_id",
     related_query_name="device",
 ).contribute_to_class(Device, "lbservices")
+
+GenericRelation(
+    to=LBServiceAssignment,
+    content_type_field="assigned_object_type",
+    object_id_field="assigned_object_id",
+    related_query_name="virtualmachine",
+).contribute_to_class(VirtualMachine, "lbservices")
 
 GenericRelation(
     to=LBServiceAssignment,

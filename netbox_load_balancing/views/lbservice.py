@@ -4,10 +4,13 @@ from django.shortcuts import get_object_or_404
 from netbox.views import generic
 from utilities.views import register_model_view
 
+from dcim.models import Device, VirtualDeviceContext
+from virtualization.models import VirtualMachine
+
 from netbox_load_balancing.tables import LBServiceTable
 from netbox_load_balancing.filtersets import LBServiceFilterSet
 
-from netbox_load_balancing.models import LBService, LBServiceAssignment
+from netbox_load_balancing.models import LBService, LBServiceAssignment, VirtualIP
 from netbox_load_balancing.forms import (
     LBServiceFilterForm,
     LBServiceForm,
@@ -73,6 +76,28 @@ class LBServiceBulkDeleteView(generic.BulkDeleteView):
 class LBServiceBulkImportView(generic.BulkImportView):
     queryset = LBService.objects.all()
     model_form = LBServiceImportForm
+
+
+@register_model_view(LBServiceAssignment, "list", path="", detail=False)
+class LBServiceAssignmentListView(generic.ObjectListView):
+    queryset = LBServiceAssignment.objects.all()
+
+    def get_extra_context(self, request):
+        context = super().get_extra_context(request)
+
+        # Override prerequisite_model with OR logic:
+        # At least one of Device, VirtualMachine, or VirtualDeviceContext must exist
+        if not (
+            Device.objects.exists()
+            or VirtualMachine.objects.exists()
+            or VirtualDeviceContext.objects.exists()
+            or VirtualIP.objects.exists()
+        ):
+            context["prerequisite_model"] = Device
+        else:
+            context["prerequisite_model"] = None
+
+        return context
 
 
 @register_model_view(LBServiceAssignment, "add", detail=False)
