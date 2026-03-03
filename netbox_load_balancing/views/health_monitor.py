@@ -4,10 +4,10 @@ from django.shortcuts import get_object_or_404
 from netbox.views import generic
 from utilities.views import register_model_view
 
-from netbox_load_balancing.tables import HealthMonitorTable
+from netbox_load_balancing.tables import HealthMonitorTable, PoolTable
 from netbox_load_balancing.filtersets import HealthMonitorFilterSet
 
-from netbox_load_balancing.models import HealthMonitor, HealthMonitorAssignment
+from netbox_load_balancing.models import HealthMonitor, HealthMonitorAssignment, Pool
 from netbox_load_balancing.forms import (
     HealthMonitorFilterForm,
     HealthMonitorForm,
@@ -33,6 +33,16 @@ __all__ = (
 class HealthMonitorView(generic.ObjectView):
     queryset = HealthMonitor.objects.all()
     template_name = "netbox_load_balancing/healthmonitor.html"
+
+    def get_extra_context(self, request, instance):
+        pool_assignments_table = PoolTable(
+            Pool.objects.filter(health_monitors__monitor=instance),
+            orderable=False,
+        )
+        pool_assignments_table.configure(request)
+        return {
+            "pool_assignments_table": pool_assignments_table,
+        }
 
 
 @register_model_view(HealthMonitor, "list", path="", detail=False)

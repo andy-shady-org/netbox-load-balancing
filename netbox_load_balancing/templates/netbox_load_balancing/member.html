@@ -3,6 +3,7 @@
 {% load plugins %}
 {% load humanize %}
 {% load helpers %}
+{% load render_table from django_tables2 %}
 
 {% block content %}
 <div class="row">
@@ -33,6 +34,26 @@
                     <td>{% checkmark object.disabled %}</td>
                 </tr>
             </table>
+        </div>
+        <div class="card">
+            {% if pool_assignment_table.rows|length == 1 %}
+                <h2 class="card-header">{% trans "Pool Assignment" %}</h2>
+            {% else %}
+                <h2 class="card-header">{% trans "Pool Assignments" %}</h2>
+            {% endif %}
+            <div class="table-responsive">
+                {% render_table pool_assignment_table 'inc/table.html' %}
+            </div>
+        </div>
+        <div class="card">
+            {% if monitor_assignments_table.rows|length == 1 %}
+                <h2 class="card-header">{% trans "Health Monitor Assignment" %}</h2>
+            {% else %}
+                <h2 class="card-header">{% trans "Health Monitor Assignments" %}</h2>
+            {% endif %}
+            <div class="table-responsive">
+                {% render_table monitor_assignments_table 'inc/table.html' %}
+            </div>
         </div>
         {% include 'inc/panels/custom_fields.html' %}
     </div>
