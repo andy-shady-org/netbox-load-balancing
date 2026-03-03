@@ -62,9 +62,7 @@ class LBServiceAssignment(NetBoxModel):
 
     clone_fields = ("assigned_object_type", "assigned_object_id")
 
-    prerequisite_models = (
-        "netbox_load_balancing.LBService",
-    )
+    prerequisite_models = ("netbox_load_balancing.LBService",)
 
     class Meta:
         indexes = (models.Index(fields=("assigned_object_type", "assigned_object_id")),)
