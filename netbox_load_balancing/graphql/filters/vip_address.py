@@ -4,6 +4,11 @@ import strawberry_django
 from strawberry_django import FilterLookup
 from strawberry.scalars import ID
 
+try:
+    from strawberry_django import StrFilterLookup
+except ImportError:
+    from strawberry_django import FilterLookup as StrFilterLookup
+
 from netbox.graphql.filters import PrimaryModelFilter
 from tenancy.graphql.filter_mixins import ContactFilterMixin
 from ipam.graphql.filters import IPAddressFilter
@@ -18,9 +23,9 @@ __all__ = ("NetBoxLoadBalancingVirtualIPFilter",)
 
 @strawberry_django.filter(VirtualIP, lookups=True)
 class NetBoxLoadBalancingVirtualIPFilter(ContactFilterMixin, PrimaryModelFilter):
-    name: FilterLookup[str] | None = strawberry_django.filter_field()
-    description: FilterLookup[str] | None = strawberry_django.filter_field()
-    dns_name: FilterLookup[str] | None = strawberry_django.filter_field()
+    name: StrFilterLookup[str] | None = strawberry_django.filter_field()
+    description: StrFilterLookup[str] | None = strawberry_django.filter_field()
+    dns_name: StrFilterLookup[str] | None = strawberry_django.filter_field()
     disabled: FilterLookup[bool] | None = strawberry_django.filter_field()
     virtual_pool: (
         Annotated[
