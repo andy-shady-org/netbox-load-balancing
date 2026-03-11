@@ -3,6 +3,13 @@ import strawberry
 import strawberry_django
 from strawberry_django import FilterLookup
 
+try:
+    from strawberry_django import StrFilterLookup
+except ImportError:
+    from strawberry_django import FilterLookup as StrFilterLookup
+
+from netbox.graphql.filter_lookups import IntegerLookup
+
 from netbox.graphql.filters import PrimaryModelFilter
 from tenancy.graphql.filter_mixins import ContactFilterMixin
 from netbox_load_balancing.graphql.enums import (
@@ -21,8 +28,8 @@ __all__ = ("NetBoxLoadBalancingPoolFilter",)
 
 @strawberry_django.filter(Pool, lookups=True)
 class NetBoxLoadBalancingPoolFilter(ContactFilterMixin, PrimaryModelFilter):
-    name: FilterLookup[str] | None = strawberry_django.filter_field()
-    description: FilterLookup[str] | None = strawberry_django.filter_field()
+    name: StrFilterLookup[str] | None = strawberry_django.filter_field()
+    description: StrFilterLookup[str] | None = strawberry_django.filter_field()
     listeners: (
         Annotated[
             "NetBoxLoadBalancingListenerFilter",
@@ -51,7 +58,16 @@ class NetBoxLoadBalancingPoolFilter(ContactFilterMixin, PrimaryModelFilter):
         ]
         | None
     ) = strawberry_django.filter_field()
-    persistence_timeout: FilterLookup[int] | None = strawberry_django.filter_field()
-    backup_timeout: FilterLookup[int] | None = strawberry_django.filter_field()
-    member_port: FilterLookup[int] | None = strawberry_django.filter_field()
+    persistence_timeout: (
+        Annotated["IntegerLookup", strawberry.lazy("netbox.graphql.filter_lookups")]
+        | None
+    ) = strawberry_django.filter_field()
+    backup_timeout: (
+        Annotated["IntegerLookup", strawberry.lazy("netbox.graphql.filter_lookups")]
+        | None
+    ) = strawberry_django.filter_field()
+    member_port: (
+        Annotated["IntegerLookup", strawberry.lazy("netbox.graphql.filter_lookups")]
+        | None
+    ) = strawberry_django.filter_field()
     disabled: FilterLookup[bool] | None = strawberry_django.filter_field()
