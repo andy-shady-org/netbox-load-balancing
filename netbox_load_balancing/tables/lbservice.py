@@ -44,7 +44,7 @@ class LBServiceAssignmentTable(NetBoxTable):
     assigned_object = tables.Column(
         linkify=True,
         orderable=False,
-        verbose_name=_("IP Address"),
+        verbose_name=_("Assigned Object"),
     )
     service = tables.Column(verbose_name=_("LBService"), linkify=True)
     actions = ActionsColumn(actions=("edit", "delete"))

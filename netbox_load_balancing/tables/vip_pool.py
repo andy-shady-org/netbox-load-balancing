@@ -46,7 +46,7 @@ class VirtualIPPoolAssignmentTable(NetBoxTable):
     assigned_object = tables.Column(
         linkify=True,
         orderable=False,
-        verbose_name=_("Prefix/IP Range"),
+        verbose_name=_("Assigned Object"),
     )
     virtual_pool = tables.Column(verbose_name=_("Virtual IP Pool"), linkify=True)
     disabled = tables.BooleanColumn()

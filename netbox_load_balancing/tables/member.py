@@ -44,7 +44,7 @@ class MemberAssignmentTable(NetBoxTable):
     assigned_object = tables.Column(
         linkify=True,
         orderable=False,
-        verbose_name=_("Pool/Health Monitor"),
+        verbose_name=_("Assigned Object"),
     )
     member = tables.Column(verbose_name=_("Member"), linkify=True)
     disabled = tables.BooleanColumn()
