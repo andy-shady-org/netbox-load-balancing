@@ -66,7 +66,7 @@ class HealthMonitorAssignmentTable(NetBoxTable):
     assigned_object = tables.Column(
         linkify=True,
         orderable=False,
-        verbose_name=_("Pool"),
+        verbose_name=_("Assigned Object"),
     )
     monitor = tables.Column(verbose_name=_("Health Monitor"), linkify=True)
     disabled = tables.BooleanColumn()
