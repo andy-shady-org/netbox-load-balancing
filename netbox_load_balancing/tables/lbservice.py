@@ -16,7 +16,7 @@ __all__ = (
 class LBServiceTable(TenancyColumnsMixin, NetBoxTable):
     name = tables.LinkColumn()
     disabled = tables.BooleanColumn()
-    tags = TagColumn(url_name="plugins:netbox_load_balancing:service_list")
+    tags = TagColumn(url_name="plugins:netbox_load_balancing:lbservice_list")
 
     class Meta(NetBoxTable.Meta):
         model = LBService
