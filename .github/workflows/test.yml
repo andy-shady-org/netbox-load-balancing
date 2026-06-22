@@ -56,6 +56,13 @@ jobs:
                 sed -i 's/exclude/#exclude/g' pyproject.toml
                 pip install .
 
+          - name: Install dependencies
+            working-directory: netbox
+            run: |
+              python -m pip install --upgrade pip
+              python -m pip install tblib
+              pip install -r requirements.txt -U
+
           - name: Record query-count baselines
             working-directory: netbox
             run: |
