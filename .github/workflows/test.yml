@@ -56,16 +56,21 @@ jobs:
                 sed -i 's/exclude/#exclude/g' pyproject.toml
                 pip install .
 
-          - name: Set up configuration
+          - name: Install dependencies
             working-directory: netbox
             run: |
-                ln -s $(pwd)/../netbox-load-balancing/media/configuration.testing.py netbox/netbox/configuration.py
+              python -m pip install --upgrade pip
+              python -m pip install tblib
+              pip install -r requirements.txt -U
 
-                python -m pip install --upgrade pip
-                python -m pip install tblib
-                pip install -r requirements.txt -U
+          - name: Record query-count baselines
+            working-directory: netbox
+            run: >
+                NETBOX_CONFIGURATION=netbox_load_balancing.tests.configuration
+                UPDATE_QUERY_COUNTS=1 python netbox/manage.py test netbox_load_balancing.tests -v2
 
           - name: Run tests
             working-directory: netbox
-            run: |
+            run: >
+                NETBOX_CONFIGURATION=netbox_load_balancing.tests.configuration
                 python netbox/manage.py test netbox_load_balancing.tests --parallel -v2

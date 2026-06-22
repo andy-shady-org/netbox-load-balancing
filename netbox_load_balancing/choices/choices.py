@@ -58,11 +58,14 @@ class PoolSessionPersistenceChoices(ChoiceSet):
     SOURCE_IP = "source-ip"
     SSL_BRIDGE = "ssl-bridge"
     COOKIE = "cookie"
+    SSL_SESSION_ID = "ssl-session-id"
 
     CHOICES = [
         (NONE, "NONE", "green"),
         (SOURCE_IP, "SOURCE_IP", "blue"),
         (SSL_BRIDGE, "SSL_BRIDGE", "orange"),
+        (COOKIE, "COOKIE", "cyan"),
+        (SSL_SESSION_ID, "SSL_SESSION_ID", "pink"),
     ]
 
 
