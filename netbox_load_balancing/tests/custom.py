@@ -26,7 +26,7 @@ def get_graphql_type_for_model(model):
 
 class NetBoxLoadBalancingGraphQLMixin:
     def _get_graphql_base_name(self):
-        base_name = self.model._meta.verbose_name.lower().replace(" ", "_")
+        base_name = self.model._meta.verbose_name.lower().replace(" ", "")
         return getattr(self, "graphql_base_name", f"netbox_load_balancing_{base_name}")
 
     def _build_query_with_filter(self, name, filter_string):
