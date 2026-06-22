@@ -1,7 +1,7 @@
 import django_filters
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
-from netbox.filtersets import NetBoxModelFilterSet, PrimaryModelFilterSet
+from netbox.filtersets import PrimaryModelFilterSet
 from utilities.filtersets import register_filterset
 
 from ipam.models import IPAddress

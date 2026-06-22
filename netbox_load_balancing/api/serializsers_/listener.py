@@ -7,7 +7,6 @@ from netbox.api.serializers import PrimaryModelSerializer
 
 from netbox_load_balancing.api.serializers import LBServiceSerializer
 from netbox_load_balancing.models import Listener
-from netbox_load_balancing.choices import ListenerProtocolChoices
 
 
 class ListenerSerializer(PrimaryModelSerializer):
