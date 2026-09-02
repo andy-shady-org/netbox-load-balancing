@@ -1,0 +1,57 @@
+{% extends 'generic/object.html' %}
+{% load i18n %}
+{% load helpers %}
+
+{% block content %}
+<div class="row">
+    <div class="col col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">{% trans "Load Balancer Service Topology Diagram" %}</h5>
+                <div class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="downloadDiagramSVG()">
+                        <i class="mdi mdi-download"></i> {% trans "Download SVG" %}
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-3">
+                <div class="d-flex flex-wrap gap-3 mb-3 text-muted small">
+                    <span><i class="mdi mdi-server"></i> <strong>{% trans "Host Infra" %}:</strong> {{ total_infra }}</span>
+                    <span><i class="mdi mdi-ip-network"></i> <strong>{% trans "Virtual IPs" %}:</strong> {{ total_vips }}</span>
+                    <span><i class="mdi mdi-ear-hearing"></i> <strong>{% trans "Listeners" %}:</strong> {{ total_listeners }}</span>
+                    <span><i class="mdi mdi-format-list-bulleted"></i> <strong>{% trans "Pools" %}:</strong> {{ total_pools }}</span>
+                    <span><i class="mdi mdi-heart-pulse"></i> <strong>{% trans "Health Monitors" %}:</strong> {{ total_monitors }}</span>
+                    <span><i class="mdi mdi-server-network"></i> <strong>{% trans "Backend Members" %}:</strong> {{ total_members }}</span>
+                </div>
+                <div id="diagram-container" class="border rounded p-3 text-center" style="overflow-x: auto; max-width: 100%; background-color: #f8fafc;">
+                    <div style="min-width: 100%; display: inline-block;">
+                        {{ svg|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function downloadDiagramSVG() {
+    const container = document.getElementById('diagram-container');
+    const svgElement = container.querySelector('svg');
+    if (!svgElement) return;
+    const serializer = new XMLSerializer();
+    let source = serializer.serializeToString(svgElement);
+    if (!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
+        source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+    }
+    const blob = new Blob([source], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'lbservice-{{ object.pk }}-diagram.svg';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+}
+</script>
+{% endblock %}

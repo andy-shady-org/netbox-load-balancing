@@ -1,17 +1,16 @@
 {
-  "healthmonitor:api_list_objects": 13,
-  "healthmonitor:list_objects_with_permission": 20,
-  "lbservice:api_list_objects": 13,
-  "lbservice:list_objects_with_permission": 20,
-  "listener:api_list_objects": 14,
-  "listener:list_objects_with_permission": 21,
-  "member:api_list_objects": 14,
-  "member:list_objects_with_permission": 21,
-  "pool:api_list_objects": 14,
-  "pool:list_objects_with_permission": 20,
-  "virtualip:api_list_objects": 15,
-  "virtualip:list_objects_with_permission": 22,
-  "virtualippool:api_list_objects": 13,
-  "virtualippool:list_objects_with_permission": 20
+  "healthmonitor:api_list_objects": 12,
+  "healthmonitor:list_objects_with_permission": 17,
+  "lbservice:api_list_objects": 12,
+  "lbservice:list_objects_with_permission": 17,
+  "listener:api_list_objects": 13,
+  "listener:list_objects_with_permission": 18,
+  "member:api_list_objects": 13,
+  "member:list_objects_with_permission": 18,
+  "pool:api_list_objects": 13,
+  "pool:list_objects_with_permission": 17,
+  "virtualip:api_list_objects": 14,
+  "virtualip:list_objects_with_permission": 19,
+  "virtualippool:api_list_objects": 12,
+  "virtualippool:list_objects_with_permission": 17
 }
-
