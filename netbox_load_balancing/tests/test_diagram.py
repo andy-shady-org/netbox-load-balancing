@@ -1,7 +1,14 @@
 from django.test import TestCase
 from netaddr import IPNetwork
 
-from dcim.models import Device, DeviceRole, DeviceType, Manufacturer, Site, VirtualDeviceContext
+from dcim.models import (
+    Device,
+    DeviceRole,
+    DeviceType,
+    Manufacturer,
+    Site,
+    VirtualDeviceContext,
+)
 from ipam.models import IPAddress, IPRange, Prefix, VLAN
 from virtualization.models import Cluster, ClusterType, VirtualMachine
 
@@ -18,7 +25,10 @@ from netbox_load_balancing.models import (
     Member,
     MemberAssignment,
 )
-from netbox_load_balancing.svg.diagram import LBServiceDiagramSVG, get_lbservice_hierarchy_data
+from netbox_load_balancing.svg.diagram import (
+    LBServiceDiagramSVG,
+    get_lbservice_hierarchy_data,
+)
 
 
 class LBServiceDiagramTest(TestCase):
@@ -87,7 +97,9 @@ class LBServiceDiagramTest(TestCase):
         )
 
         # Assign infra & VIP to service
-        LBServiceAssignment.objects.create(service=cls.service, assigned_object=cls.device)
+        LBServiceAssignment.objects.create(
+            service=cls.service, assigned_object=cls.device
+        )
         LBServiceAssignment.objects.create(service=cls.service, assigned_object=cls.vm)
         LBServiceAssignment.objects.create(service=cls.service, assigned_object=cls.vdc)
         LBServiceAssignment.objects.create(service=cls.service, assigned_object=cls.vip)

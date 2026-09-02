@@ -29,14 +29,16 @@ class LBServiceDiagramView(generic.ObjectView):
         total_members = len(hierarchy_data["members"])
         total_infra = len(hierarchy_data["infra"])
 
-        has_elements = any([
-            total_vips,
-            total_listeners,
-            total_pools,
-            total_monitors,
-            total_members,
-            total_infra,
-        ])
+        has_elements = any(
+            [
+                total_vips,
+                total_listeners,
+                total_pools,
+                total_monitors,
+                total_members,
+                total_infra,
+            ]
+        )
 
         return {
             "svg": svg_drawing.tostring(),
@@ -48,4 +50,3 @@ class LBServiceDiagramView(generic.ObjectView):
             "total_members": total_members,
             "total_infra": total_infra,
         }
-
