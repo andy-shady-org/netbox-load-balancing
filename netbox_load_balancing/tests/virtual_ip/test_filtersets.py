@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.contrib.contenttypes.models import ContentType
 
-from utilities.testing import ChangeLoggedFilterSetTests
+from utilities.testing import ChangeLoggedFilterSetTestMixin
 from ipam.models import Prefix, IPAddress, IPRange
 
 from netbox_load_balancing.models import (
@@ -12,7 +12,7 @@ from netbox_load_balancing.models import (
 from netbox_load_balancing.filtersets import VirtualIPFilterSet
 
 
-class VirtualIPFiterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
+class VirtualIPFiterSetTestCase(TestCase, ChangeLoggedFilterSetTestMixin):
     queryset = VirtualIP.objects.all()
     filterset = VirtualIPFilterSet
 

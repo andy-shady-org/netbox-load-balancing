@@ -39,7 +39,7 @@ NetBox Load Balancing is compatible with the following NetBox versions.
 | NetBox 4.4     | \>= 1.2.0                     |
 | NetBox 4.5     | \>= 1.3.0                     |
 | NetBox 4.6     | \>= 1.3.0                     |
-| NetBox 4.7     | \>= 1.3.0                     |
+| NetBox 4.7     | \>= 1.4.0                     |
 
 
 ### Installation of NetBox Load Balancing
@@ -264,6 +264,7 @@ The following Django permissions are applicable to LBServiceAssignment objects:
 Services
 ![List Load Balancing Services](img/service-list.png)
 ![View Load Balancing Services](img/service.png)
+![View Load Balancing Services Diagram](img/diagram.png)
 
 
 ### Load Balancing Listeners, Pools and Members

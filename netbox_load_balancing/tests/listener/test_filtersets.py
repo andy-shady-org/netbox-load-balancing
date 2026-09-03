@@ -1,13 +1,13 @@
 from django.test import TestCase
 
-from utilities.testing import ChangeLoggedFilterSetTests
+from utilities.testing import ChangeLoggedFilterSetTestMixin
 
 from netbox_load_balancing.models import Listener, LBService, Pool
 from netbox_load_balancing.filtersets import ListenerFilterSet
 from netbox_load_balancing.choices import ListenerProtocolChoices
 
 
-class ListenerFiterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
+class ListenerFiterSetTestCase(TestCase, ChangeLoggedFilterSetTestMixin):
     queryset = Listener.objects.all()
     filterset = ListenerFilterSet
 
