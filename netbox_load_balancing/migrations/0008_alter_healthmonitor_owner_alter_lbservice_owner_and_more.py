@@ -7,44 +7,89 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('netbox_load_balancing', '0007_alter_lbserviceassignment_assigned_object_type_and_more'),
-        ('users', '0016_default_ordering_indexes'),
+        (
+            "netbox_load_balancing",
+            "0007_alter_lbserviceassignment_assigned_object_type_and_more",
+        ),
+        ("users", "0016_default_ordering_indexes"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='healthmonitor',
-            name='owner',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='+', to='users.owner'),
+            model_name="healthmonitor",
+            name="owner",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="+",
+                to="users.owner",
+            ),
         ),
         migrations.AlterField(
-            model_name='lbservice',
-            name='owner',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='+', to='users.owner'),
+            model_name="lbservice",
+            name="owner",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="+",
+                to="users.owner",
+            ),
         ),
         migrations.AlterField(
-            model_name='listener',
-            name='owner',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='+', to='users.owner'),
+            model_name="listener",
+            name="owner",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="+",
+                to="users.owner",
+            ),
         ),
         migrations.AlterField(
-            model_name='member',
-            name='owner',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='+', to='users.owner'),
+            model_name="member",
+            name="owner",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="+",
+                to="users.owner",
+            ),
         ),
         migrations.AlterField(
-            model_name='pool',
-            name='owner',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='+', to='users.owner'),
+            model_name="pool",
+            name="owner",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="+",
+                to="users.owner",
+            ),
         ),
         migrations.AlterField(
-            model_name='virtualip',
-            name='owner',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='+', to='users.owner'),
+            model_name="virtualip",
+            name="owner",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="+",
+                to="users.owner",
+            ),
         ),
         migrations.AlterField(
-            model_name='virtualippool',
-            name='owner',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='+', to='users.owner'),
+            model_name="virtualippool",
+            name="owner",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="+",
+                to="users.owner",
+            ),
         ),
     ]
