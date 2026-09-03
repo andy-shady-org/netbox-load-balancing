@@ -1,13 +1,13 @@
 from django.test import TestCase
 
 from tenancy.models import Tenant, TenantGroup
-from utilities.testing import ChangeLoggedFilterSetTests
+from utilities.testing import ChangeLoggedFilterSetTestMixin
 
 from netbox_load_balancing.models import LBService
 from netbox_load_balancing.filtersets import LBServiceFilterSet
 
 
-class LBServiceFiterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
+class LBServiceFiterSetTestCase(TestCase, ChangeLoggedFilterSetTestMixin):
     queryset = LBService.objects.all()
     filterset = LBServiceFilterSet
 

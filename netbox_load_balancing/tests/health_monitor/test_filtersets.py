@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from utilities.testing import ChangeLoggedFilterSetTests
+from utilities.testing import ChangeLoggedFilterSetTestMixin
 
 from netbox_load_balancing.models import HealthMonitor
 from netbox_load_balancing.filtersets import HealthMonitorFilterSet
@@ -9,7 +9,7 @@ from netbox_load_balancing.choices import (
 )
 
 
-class HealthMonitorFiterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
+class HealthMonitorFiterSetTestCase(TestCase, ChangeLoggedFilterSetTestMixin):
     queryset = HealthMonitor.objects.all()
     filterset = HealthMonitorFilterSet
 

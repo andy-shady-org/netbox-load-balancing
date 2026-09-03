@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from utilities.testing import ChangeLoggedFilterSetTests
+from utilities.testing import ChangeLoggedFilterSetTestMixin
 
 from ipam.models import IPAddress
 
@@ -8,7 +8,7 @@ from netbox_load_balancing.models import Member
 from netbox_load_balancing.filtersets import MemberFilterSet
 
 
-class MemberFiterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
+class MemberFiterSetTestCase(TestCase, ChangeLoggedFilterSetTestMixin):
     queryset = Member.objects.all()
     filterset = MemberFilterSet
 

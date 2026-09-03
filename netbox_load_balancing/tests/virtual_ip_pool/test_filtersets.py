@@ -1,13 +1,13 @@
 from django.test import TestCase
 
 from tenancy.models import Tenant, TenantGroup
-from utilities.testing import ChangeLoggedFilterSetTests
+from utilities.testing import ChangeLoggedFilterSetTestMixin
 
 from netbox_load_balancing.models import VirtualIPPool
 from netbox_load_balancing.filtersets import VirtualIPPoolFilterSet
 
 
-class VirtualIPPoolFiterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
+class VirtualIPPoolFiterSetTestCase(TestCase, ChangeLoggedFilterSetTestMixin):
     queryset = VirtualIPPool.objects.all()
     filterset = VirtualIPPoolFilterSet
 

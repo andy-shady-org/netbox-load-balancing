@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from utilities.testing import ChangeLoggedFilterSetTests
+from utilities.testing import ChangeLoggedFilterSetTestMixin
 
 from netbox_load_balancing.models import LBService, Pool, Listener
 from netbox_load_balancing.filtersets import PoolFilterSet
@@ -11,7 +11,7 @@ from netbox_load_balancing.choices import (
 )
 
 
-class PoolFiterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
+class PoolFiterSetTestCase(TestCase, ChangeLoggedFilterSetTestMixin):
     queryset = Pool.objects.all()
     filterset = PoolFilterSet
 
