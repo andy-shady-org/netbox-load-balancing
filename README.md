@@ -20,7 +20,10 @@
 
 This plugin is based on the OpenStack modelling of [LBaaS](https://docs.openstack.org/mitaka/networking-guide/config-lbaas.html)
 
-This plugin provides following Models:
+![View Load Balancing Services Diagram](docs/img/diagram.png)
+
+
+This plugin provides the following Models:
 
 * Services
 * Virtual Pools

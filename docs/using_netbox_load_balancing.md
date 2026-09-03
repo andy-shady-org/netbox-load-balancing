@@ -264,6 +264,7 @@ The following Django permissions are applicable to LBServiceAssignment objects:
 Services
 ![List Load Balancing Services](img/service-list.png)
 ![View Load Balancing Services](img/service.png)
+![View Load Balancing Services Diagram](img/diagram.png)
 
 
 ### Load Balancing Listeners, Pools and Members
