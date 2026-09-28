@@ -32,9 +32,7 @@ class ListenerView(generic.ObjectView):
         table_definitions = {
             "pool_table": (
                 PoolTable,
-                Pool.objects.restrict(request.user, "view").filter(
-                    listeners=instance
-                ),
+                Pool.objects.restrict(request.user, "view").filter(listeners=instance),
             ),
         }
         context = {}
