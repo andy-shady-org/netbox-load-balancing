@@ -1,10 +1,10 @@
 from netbox.views import generic
 from utilities.views import register_model_view
 
-from netbox_load_balancing.tables import ListenerTable
+from netbox_load_balancing.tables import ListenerTable, PoolTable
 from netbox_load_balancing.filtersets import ListenerFilterSet
 
-from netbox_load_balancing.models import Listener
+from netbox_load_balancing.models import Listener, Pool
 from netbox_load_balancing.forms import (
     ListenerFilterForm,
     ListenerForm,
@@ -27,6 +27,21 @@ __all__ = (
 class ListenerView(generic.ObjectView):
     queryset = Listener.objects.all()
     template_name = "netbox_load_balancing/listener.html"
+
+    def get_extra_context(self, request, instance):
+        table_definitions = {
+            "pool_table": (
+                PoolTable,
+                Pool.objects.restrict(request.user, "view").filter(listeners=instance),
+            ),
+        }
+        context = {}
+        for name, (table_class, queryset) in table_definitions.items():
+            table = table_class(queryset, orderable=False)
+            table.configure(request)
+            context[name] = table
+
+        return context
 
 
 @register_model_view(Listener, "list", path="", detail=False)
