@@ -3,6 +3,7 @@
 {% load plugins %}
 {% load humanize %}
 {% load helpers %}
+{% load render_table from django_tables2 %}
 
 {% block content %}
 <div class="row">
@@ -79,6 +80,18 @@
     <div class="col col-md-6">
         {% include 'inc/panels/tags.html' %}
         {% include 'inc/panels/comments.html' %}
+    </div>
+    <div class="col col-md-12">
+        <div class="card">
+            {% if pool_table.rows|length == 1 %}
+                <h2 class="card-header">{% trans "Pool" %}</h2>
+            {% else %}
+                <h2 class="card-header">{% trans "Pools" %}</h2>
+            {% endif %}
+            <div class="table-responsive">
+                {% render_table pool_table 'inc/table.html' %}
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
