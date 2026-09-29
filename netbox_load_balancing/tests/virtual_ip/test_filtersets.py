@@ -3,6 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from utilities.testing import ChangeLoggedFilterSetTestMixin
 from ipam.models import Prefix, IPAddress, IPRange
+from tenancy.models import Tenant, TenantGroup
 
 from netbox_load_balancing.models import (
     VirtualIP,
@@ -18,6 +19,21 @@ class VirtualIPFiterSetTestCase(TestCase, ChangeLoggedFilterSetTestMixin):
 
     @classmethod
     def setUpTestData(cls):
+        cls.tenant_groups = (
+            TenantGroup(name="Tenant group 1", slug="tenant-group-1"),
+            TenantGroup(name="Tenant group 2", slug="tenant-group-2"),
+            TenantGroup(name="Tenant group 3", slug="tenant-group-3"),
+        )
+        for tenantgroup in cls.tenant_groups:
+            tenantgroup.save()
+
+        cls.tenants = (
+            Tenant(name="Tenant 1", slug="tenant-1", group=cls.tenant_groups[0]),
+            Tenant(name="Tenant 2", slug="tenant-2", group=cls.tenant_groups[1]),
+            Tenant(name="Tenant 3", slug="tenant-3", group=cls.tenant_groups[2]),
+        )
+        Tenant.objects.bulk_create(cls.tenants)
+
         cls.prefixes = (
             Prefix(prefix="10.1.1.0/24", status="active"),
             Prefix(prefix="10.1.2.0/24", status="active"),
@@ -96,6 +112,7 @@ class VirtualIPFiterSetTestCase(TestCase, ChangeLoggedFilterSetTestMixin):
                 dns_name="test4.example.com",
                 disabled=True,
                 route_health_injection=False,
+                tenant=cls.tenants[0],
             ),
             VirtualIP(
                 name="virtual-ip-2",
@@ -104,6 +121,7 @@ class VirtualIPFiterSetTestCase(TestCase, ChangeLoggedFilterSetTestMixin):
                 dns_name="test4.example.com",
                 disabled=True,
                 route_health_injection=False,
+                tenant=cls.tenants[1],
             ),
             VirtualIP(
                 name="virtual-ip-3",
@@ -112,6 +130,7 @@ class VirtualIPFiterSetTestCase(TestCase, ChangeLoggedFilterSetTestMixin):
                 dns_name="test5.example.com",
                 disabled=True,
                 route_health_injection=False,
+                tenant=cls.tenants[2],
             ),
             VirtualIP(
                 name="virtual-ip-4",
@@ -120,12 +139,19 @@ class VirtualIPFiterSetTestCase(TestCase, ChangeLoggedFilterSetTestMixin):
                 dns_name="test6.example.com",
                 disabled=False,
                 route_health_injection=False,
+                tenant=cls.tenants[2],
             ),
         )
         VirtualIP.objects.bulk_create(cls.vips)
 
     def test_name(self):
         params = {"name": ["virtual-ip-1", "virtual-ip-2"]}
+        self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
+
+    def test_tenant(self):
+        params = {"tenant_id": [self.tenants[0].pk, self.tenants[1].pk]}
+        self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
+        params = {"tenant": [self.tenants[0].slug, self.tenants[1].slug]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
     def test_disabled(self):

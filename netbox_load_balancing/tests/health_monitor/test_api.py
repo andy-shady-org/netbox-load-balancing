@@ -50,6 +50,9 @@ class HealthMonitorAPITestCase(
     bulk_update_data = {
         "description": "Test Monitor",
     }
+    bulk_update_invalid_data = {
+        "type": "invalid_type",
+    }
 
     @classmethod
     def setUpTestData(cls):

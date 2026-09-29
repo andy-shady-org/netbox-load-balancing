@@ -8,6 +8,8 @@ from netbox.forms import (
     PrimaryModelForm,
 )
 
+from tenancy.forms import TenancyForm, TenancyFilterForm
+from extras.forms import LocalConfigContextFilterForm
 from utilities.forms.rendering import FieldSet, ObjectAttribute
 from utilities.forms.fields import (
     DynamicModelChoiceField,
@@ -16,8 +18,11 @@ from utilities.forms.fields import (
     CommentField,
     CSVModelMultipleChoiceField,
     CSVChoiceField,
+    CSVModelChoiceField,
+    JSONField,
 )
 
+from tenancy.models import Tenant, TenantGroup
 
 from netbox_load_balancing.models import (
     Pool,
@@ -39,7 +44,7 @@ __all__ = (
 )
 
 
-class PoolForm(PrimaryModelForm):
+class PoolForm(TenancyForm, PrimaryModelForm):
     name = forms.CharField(max_length=255, required=True)
     description = forms.CharField(max_length=200, required=False)
     disabled = forms.BooleanField(required=False)
@@ -86,7 +91,14 @@ class PoolForm(PrimaryModelForm):
             "member_port",
             name=_("Attributes"),
         ),
+        FieldSet("tenant_group", "tenant", name=_("Tenancy")),
         FieldSet("tags", name=_("Tags")),
+        FieldSet("local_context_data", name=_("Local Config Context Data")),
+    )
+    local_context_data = JSONField(
+        required=False,
+        label="",
+        widget=forms.Textarea(attrs={"aria-label": _("Local config context data")}),
     )
     comments = CommentField()
 
@@ -104,12 +116,15 @@ class PoolForm(PrimaryModelForm):
             "persistence_timeout",
             "backup_timeout",
             "member_port",
+            "tenant_group",
+            "tenant",
             "comments",
             "tags",
+            "local_context_data",
         ]
 
 
-class PoolFilterForm(PrimaryModelFilterSetForm):
+class PoolFilterForm(LocalConfigContextFilterForm, PrimaryModelFilterSetForm):
     model = Pool
     fieldsets = (
         FieldSet("q", "filter_id", "tag", "owner_id"),
@@ -121,6 +136,8 @@ class PoolFilterForm(PrimaryModelFilterSetForm):
             "backup_persistence",
             name=_("Pool"),
         ),
+        FieldSet("tenant_group_id", "tenant_id", name=_("Tenancy")),
+        FieldSet("local_context_data", name=_("Local Config Context Data")),
     )
     listeners = DynamicModelMultipleChoiceField(
         queryset=Listener.objects.all(),
@@ -137,6 +154,12 @@ class PoolFilterForm(PrimaryModelFilterSetForm):
 
 
 class PoolImportForm(PrimaryModelImportForm):
+    tenant = CSVModelChoiceField(
+        queryset=Tenant.objects.all(),
+        required=False,
+        to_field_name="name",
+        label=_("Tenant"),
+    )
     listeners = CSVModelMultipleChoiceField(
         queryset=Listener.objects.all(),
         required=False,
@@ -187,11 +210,22 @@ class PoolImportForm(PrimaryModelImportForm):
             "backup_timeout",
             "member_port",
             "tags",
+            "local_context_data",
         )
 
 
 class PoolBulkEditForm(PrimaryModelBulkEditForm):
     model = Pool
+    tenant_group = DynamicModelChoiceField(
+        queryset=TenantGroup.objects.all(),
+        required=False,
+        label=_("Tenant Group"),
+    )
+    tenant = DynamicModelChoiceField(
+        queryset=Tenant.objects.all(),
+        required=False,
+        label=_("Tenant"),
+    )
     description = forms.CharField(max_length=200, required=False)
     disabled = forms.BooleanField(required=False)
     listeners = DynamicModelMultipleChoiceField(
@@ -240,6 +274,7 @@ class PoolBulkEditForm(PrimaryModelBulkEditForm):
             "member_port",
             name=_("Attributes"),
         ),
+        FieldSet("tenant_group", "tenant", name=_("Tenancy")),
         FieldSet("tags", name=_("Tags")),
     )
 

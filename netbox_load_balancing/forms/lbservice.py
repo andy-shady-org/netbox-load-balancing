@@ -9,12 +9,14 @@ from netbox.forms import (
 )
 
 from tenancy.forms import TenancyForm, TenancyFilterForm
+from extras.forms import LocalConfigContextFilterForm
 from utilities.forms.rendering import FieldSet, ObjectAttribute
 from utilities.forms.fields import (
     DynamicModelChoiceField,
     TagFilterField,
     CommentField,
     CSVModelChoiceField,
+    JSONField,
 )
 
 from tenancy.models import Tenant, TenantGroup
@@ -42,6 +44,12 @@ class LBServiceForm(TenancyForm, PrimaryModelForm):
         FieldSet("name", "reference", "description", "disabled", name=_("LB Service")),
         FieldSet("tenant_group", "tenant", name=_("Tenancy")),
         FieldSet("tags", name=_("Tags")),
+        FieldSet("local_context_data", name=_("Local Config Context Data")),
+    )
+    local_context_data = JSONField(
+        required=False,
+        label="",
+        widget=forms.Textarea(attrs={"aria-label": _("Local config context data")}),
     )
     comments = CommentField()
 
@@ -57,15 +65,19 @@ class LBServiceForm(TenancyForm, PrimaryModelForm):
             "tenant",
             "comments",
             "tags",
+            "local_context_data",
         ]
 
 
-class LBServiceFilterForm(TenancyFilterForm, PrimaryModelFilterSetForm):
+class LBServiceFilterForm(
+    TenancyFilterForm, LocalConfigContextFilterForm, PrimaryModelFilterSetForm
+):
     model = LBService
     fieldsets = (
         FieldSet("q", "filter_id", "tag", "owner_id"),
         FieldSet("name", "reference", name=_("LB Service")),
         FieldSet("tenant_group_id", "tenant_id", name=_("Tenancy")),
+        FieldSet("local_context_data", name=_("Local Config Context Data")),
     )
     tags = TagFilterField(model)
 
@@ -88,6 +100,7 @@ class LBServiceImportForm(PrimaryModelImportForm):
             "disabled",
             "tenant",
             "tags",
+            "local_context_data",
         )
 
 

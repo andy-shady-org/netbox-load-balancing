@@ -7,6 +7,8 @@ from netbox.forms import (
     PrimaryModelImportForm,
     PrimaryModelForm,
 )
+from tenancy.forms import TenancyForm, TenancyFilterForm
+from extras.forms import LocalConfigContextFilterForm
 from utilities.forms.rendering import FieldSet, ObjectAttribute
 from utilities.forms.fields import (
     DynamicModelChoiceField,
@@ -14,8 +16,11 @@ from utilities.forms.fields import (
     CommentField,
     NumericArrayField,
     CSVChoiceField,
+    JSONField,
+    CSVModelChoiceField,
 )
 
+from tenancy.models import Tenant, TenantGroup
 
 from netbox_load_balancing.models import (
     HealthMonitor,
@@ -35,7 +40,7 @@ __all__ = (
 )
 
 
-class HealthMonitorForm(PrimaryModelForm):
+class HealthMonitorForm(TenancyForm, PrimaryModelForm):
     name = forms.CharField(max_length=255, required=True)
     description = forms.CharField(max_length=200, required=False)
     type = forms.ChoiceField(choices=HealthMonitorTypeChoices, required=True)
@@ -85,7 +90,14 @@ class HealthMonitorForm(PrimaryModelForm):
             "response_timeout",
             name=_("Attributes"),
         ),
+        FieldSet("tenant_group", "tenant", name=_("Tenancy")),
         FieldSet("tags", name=_("Tags")),
+        FieldSet("local_context_data", name=_("Local Config Context Data")),
+    )
+    local_context_data = JSONField(
+        required=False,
+        label="",
+        widget=forms.Textarea(attrs={"aria-label": _("Local config context data")}),
     )
     comments = CommentField()
 
@@ -107,16 +119,23 @@ class HealthMonitorForm(PrimaryModelForm):
             "http_response_codes",
             "probe_interval",
             "response_timeout",
+            "tenant_group",
+            "tenant",
             "comments",
             "tags",
+            "local_context_data",
         ]
 
 
-class HealthMonitorFilterForm(PrimaryModelFilterSetForm):
+class HealthMonitorFilterForm(
+    LocalConfigContextFilterForm, TenancyFilterForm, PrimaryModelFilterSetForm
+):
     model = HealthMonitor
     fieldsets = (
         FieldSet("q", "filter_id", "tag", "owner_id"),
         FieldSet("name", "type", "http_version", name=_("HealthMonitor")),
+        FieldSet("tenant_group_id", "tenant_id", name=_("Tenancy")),
+        FieldSet("local_context_data", name=_("Local Config Context Data")),
     )
     type = forms.ChoiceField(choices=HealthMonitorTypeChoices, required=False)
     http_version = forms.ChoiceField(
@@ -128,6 +147,12 @@ class HealthMonitorFilterForm(PrimaryModelFilterSetForm):
 
 
 class HealthMonitorImportForm(PrimaryModelImportForm):
+    tenant = CSVModelChoiceField(
+        queryset=Tenant.objects.all(),
+        required=False,
+        to_field_name="name",
+        label=_("Tenant"),
+    )
     name = forms.CharField(max_length=255, required=True)
     type = CSVChoiceField(choices=HealthMonitorTypeChoices, required=False)
     description = forms.CharField(max_length=200, required=False)
@@ -181,11 +206,22 @@ class HealthMonitorImportForm(PrimaryModelImportForm):
             "probe_interval",
             "response_timeout",
             "tags",
+            "local_context_data",
         )
 
 
 class HealthMonitorBulkEditForm(PrimaryModelBulkEditForm):
     model = HealthMonitor
+    tenant_group = DynamicModelChoiceField(
+        queryset=TenantGroup.objects.all(),
+        required=False,
+        label=_("Tenant Group"),
+    )
+    tenant = DynamicModelChoiceField(
+        queryset=Tenant.objects.all(),
+        required=False,
+        label=_("Tenant"),
+    )
     type = forms.ChoiceField(choices=HealthMonitorTypeChoices, required=False)
     description = forms.CharField(max_length=200, required=False)
     disabled = forms.BooleanField(required=False)
@@ -230,6 +266,7 @@ class HealthMonitorBulkEditForm(PrimaryModelBulkEditForm):
             "response_timeout",
             name=_("Attributes"),
         ),
+        FieldSet("tenant_group", "tenant", name=_("Tenancy")),
         FieldSet("tags", name=_("Tags")),
     )
 

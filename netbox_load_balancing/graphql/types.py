@@ -43,6 +43,7 @@ class NetBoxLoadBalancingLBServiceType(PrimaryObjectType):
 )
 class NetBoxLoadBalancingListenerType(PrimaryObjectType):
     name: str
+    tenant: Annotated["TenantType", strawberry.lazy("tenancy.graphql.types")] | None
     service: (
         Annotated[
             "NetBoxLoadBalancingLBServiceType",
@@ -69,6 +70,7 @@ class NetBoxLoadBalancingListenerType(PrimaryObjectType):
 )
 class NetBoxLoadBalancingHealthMonitorType(PrimaryObjectType):
     name: str
+    tenant: Annotated["TenantType", strawberry.lazy("tenancy.graphql.types")] | None
     template: str | None
     type: str
     monitor_url: str | None
@@ -94,6 +96,7 @@ class NetBoxLoadBalancingPoolType(PrimaryObjectType):
         ]
         | None
     )
+    tenant: Annotated["TenantType", strawberry.lazy("tenancy.graphql.types")] | None
     name: str
     algorythm: str
     session_persistence: str
@@ -109,6 +112,7 @@ class NetBoxLoadBalancingPoolType(PrimaryObjectType):
 )
 class NetBoxLoadBalancingMemberType(PrimaryObjectType):
     ip_address: Annotated["IPAddressType", strawberry.lazy("ipam.graphql.types")] | None
+    tenant: Annotated["TenantType", strawberry.lazy("tenancy.graphql.types")] | None
     name: str
     reference: str
     disabled: bool
@@ -134,6 +138,7 @@ class NetBoxLoadBalancingVirtualIPType(PrimaryObjectType):
         ]
         | None
     )
+    tenant: Annotated["TenantType", strawberry.lazy("tenancy.graphql.types")] | None
     address: Annotated["IPAddressType", strawberry.lazy("ipam.graphql.types")] | None
     name: str
     dns_name: str

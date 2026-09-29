@@ -1,6 +1,7 @@
 from django.test import TestCase
 
 from utilities.testing import ChangeLoggedFilterSetTestMixin
+from tenancy.models import Tenant, TenantGroup
 
 from netbox_load_balancing.models import Listener, LBService, Pool
 from netbox_load_balancing.filtersets import ListenerFilterSet
@@ -13,6 +14,21 @@ class ListenerFiterSetTestCase(TestCase, ChangeLoggedFilterSetTestMixin):
 
     @classmethod
     def setUpTestData(cls):
+        cls.tenant_groups = (
+            TenantGroup(name="Tenant group 1", slug="tenant-group-1"),
+            TenantGroup(name="Tenant group 2", slug="tenant-group-2"),
+            TenantGroup(name="Tenant group 3", slug="tenant-group-3"),
+        )
+        for tenantgroup in cls.tenant_groups:
+            tenantgroup.save()
+
+        cls.tenants = (
+            Tenant(name="Tenant 1", slug="tenant-1", group=cls.tenant_groups[0]),
+            Tenant(name="Tenant 2", slug="tenant-2", group=cls.tenant_groups[1]),
+            Tenant(name="Tenant 3", slug="tenant-3", group=cls.tenant_groups[2]),
+        )
+        Tenant.objects.bulk_create(cls.tenants)
+
         cls.services = (
             LBService(name="service-1", reference="1.1.1.4/32", disabled=True),
             LBService(name="service-2", reference="1.1.1.5/32", disabled=True),
@@ -21,12 +37,13 @@ class ListenerFiterSetTestCase(TestCase, ChangeLoggedFilterSetTestMixin):
         LBService.objects.bulk_create(cls.services)
 
         cls.listeners = (
-            Listener(name="listener-1", service=cls.services[0], port=10),
-            Listener(name="listener-2", service=cls.services[1], port=10),
+            Listener(name="listener-1", service=cls.services[0], port=10, tenant=cls.tenants[0]),
+            Listener(name="listener-2", service=cls.services[1], port=10, tenant=cls.tenants[1]),
             Listener(
                 name="listener-3",
                 service=cls.services[2],
                 port=10,
+                tenant=cls.tenants[2],
                 protocol=ListenerProtocolChoices.HTTP,
             ),
         )
@@ -43,6 +60,12 @@ class ListenerFiterSetTestCase(TestCase, ChangeLoggedFilterSetTestMixin):
 
     def test_name(self):
         params = {"name": ["listener-1", "listener-2"]}
+        self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
+
+    def test_tenant(self):
+        params = {"tenant_id": [self.tenants[0].pk, self.tenants[1].pk]}
+        self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
+        params = {"tenant": [self.tenants[0].slug, self.tenants[1].slug]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
     def test_services(self):

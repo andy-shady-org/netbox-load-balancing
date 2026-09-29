@@ -2,14 +2,18 @@ import django_filters
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
 from netbox.filtersets import PrimaryModelFilterSet
+from tenancy.filtersets import TenancyFilterSet
 from utilities.filtersets import register_filterset
+from extras.filtersets import LocalConfigContextFilterSet
 
 from netbox_load_balancing.models import Listener, LBService, Pool
 from netbox_load_balancing.choices import ListenerProtocolChoices
 
 
 @register_filterset
-class ListenerFilterSet(PrimaryModelFilterSet):
+class ListenerFilterSet(
+    LocalConfigContextFilterSet, TenancyFilterSet, PrimaryModelFilterSet
+):
     pool_id = django_filters.ModelMultipleChoiceFilter(
         queryset=Pool.objects.all(),
         field_name="pool_listeners",

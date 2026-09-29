@@ -21,6 +21,7 @@ class MemberSerializer(PrimaryModelSerializer):
     )
     ip_address = IPAddressSerializer(nested=True, required=True, many=False)
     disabled = BooleanField(required=False, default=False)
+    config_context = SerializerMethodField(read_only=True)
 
     class Meta:
         model = Member
@@ -36,6 +37,8 @@ class MemberSerializer(PrimaryModelSerializer):
             "comments",
             "tags",
             "custom_fields",
+            "local_context_data",
+            "config_context",
             "created",
             "last_updated",
         )
@@ -48,6 +51,10 @@ class MemberSerializer(PrimaryModelSerializer):
             "name",
             "reference",
         )
+
+    @extend_schema_field(JSONField(allow_null=True))
+    def get_config_context(self, obj):
+        return obj.get_config_context()
 
 
 class MemberAssignmentSerializer(NetBoxModelSerializer):

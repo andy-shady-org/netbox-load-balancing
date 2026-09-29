@@ -32,6 +32,9 @@ class MemberAPITestCase(
     bulk_update_data = {
         "description": "Test Service",
     }
+    bulk_update_invalid_data = {
+        "ip_address": "invalid_ip_address",
+    }
 
     @classmethod
     def setUpTestData(cls):

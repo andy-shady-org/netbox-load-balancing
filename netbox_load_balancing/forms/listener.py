@@ -7,6 +7,8 @@ from netbox.forms import (
     PrimaryModelImportForm,
     PrimaryModelForm,
 )
+from tenancy.forms import TenancyForm, TenancyFilterForm
+from extras.forms import LocalConfigContextFilterForm
 
 from utilities.forms.rendering import FieldSet
 from utilities.forms.fields import (
@@ -16,7 +18,10 @@ from utilities.forms.fields import (
     CommentField,
     CSVModelChoiceField,
     CSVChoiceField,
+    JSONField,
 )
+
+from tenancy.models import Tenant, TenantGroup
 
 from netbox_load_balancing.models import Listener, LBService
 from netbox_load_balancing.choices import ListenerProtocolChoices
@@ -29,7 +34,7 @@ __all__ = (
 )
 
 
-class ListenerForm(PrimaryModelForm):
+class ListenerForm(TenancyForm, PrimaryModelForm):
     name = forms.CharField(max_length=255, required=True)
     service = DynamicModelChoiceField(
         queryset=LBService.objects.all(),
@@ -115,7 +120,14 @@ class ListenerForm(PrimaryModelForm):
             "compression",
             name=_("Attributes"),
         ),
+        FieldSet("tenant_group", "tenant", name=_("Tenancy")),
         FieldSet("tags", name=_("Tags")),
+        FieldSet("local_context_data", name=_("Local Config Context Data")),
+    )
+    local_context_data = JSONField(
+        required=False,
+        label="",
+        widget=forms.Textarea(attrs={"aria-label": _("Local config context data")}),
     )
     comments = CommentField()
 
@@ -138,12 +150,15 @@ class ListenerForm(PrimaryModelForm):
             "surge_protection",
             "tcp_buffering",
             "compression",
+            "tenant_group",
+            "tenant",
             "comments",
             "tags",
+            "local_context_data",
         ]
 
 
-class ListenerFilterForm(PrimaryModelFilterSetForm):
+class ListenerFilterForm(LocalConfigContextFilterForm, PrimaryModelFilterSetForm):
     model = Listener
     fieldsets = (
         FieldSet("q", "filter_id", "tag", "owner_id"),
@@ -163,6 +178,8 @@ class ListenerFilterForm(PrimaryModelFilterSetForm):
             "compression",
             name=_("Attributes"),
         ),
+        FieldSet("tenant_group_id", "tenant_id", name=_("Tenancy")),
+        FieldSet("local_context_data", name=_("Local Config Context Data")),
     )
     service = DynamicModelMultipleChoiceField(
         queryset=LBService.objects.all(),
@@ -231,6 +248,12 @@ class ListenerFilterForm(PrimaryModelFilterSetForm):
 
 
 class ListenerImportForm(PrimaryModelImportForm):
+    tenant = CSVModelChoiceField(
+        queryset=Tenant.objects.all(),
+        required=False,
+        to_field_name="name",
+        label=_("Tenant"),
+    )
     service = CSVModelChoiceField(
         queryset=LBService.objects.all(),
         required=False,
@@ -317,11 +340,22 @@ class ListenerImportForm(PrimaryModelImportForm):
             "tcp_buffering",
             "compression",
             "tags",
+            "local_context_data",
         )
 
 
 class ListenerBulkEditForm(PrimaryModelBulkEditForm):
     model = Listener
+    tenant_group = DynamicModelChoiceField(
+        queryset=TenantGroup.objects.all(),
+        required=False,
+        label=_("Tenant Group"),
+    )
+    tenant = DynamicModelChoiceField(
+        queryset=Tenant.objects.all(),
+        required=False,
+        label=_("Tenant"),
+    )
     description = forms.CharField(max_length=200, required=False)
     service = DynamicModelMultipleChoiceField(
         queryset=LBService.objects.all(),
@@ -406,5 +440,6 @@ class ListenerBulkEditForm(PrimaryModelBulkEditForm):
             "compression",
             name=_("Attributes"),
         ),
+        FieldSet("tenant_group", "tenant", name=_("Tenancy")),
         FieldSet("tags", name=_("Tags")),
     )

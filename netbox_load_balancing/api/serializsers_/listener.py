@@ -2,7 +2,10 @@ from rest_framework.serializers import (
     HyperlinkedIdentityField,
     BooleanField,
     IntegerField,
+    SerializerMethodField,
+    JSONField,
 )
+from drf_spectacular.utils import extend_schema_field
 from netbox.api.serializers import PrimaryModelSerializer
 
 from netbox_load_balancing.api.serializers import LBServiceSerializer
@@ -25,6 +28,7 @@ class ListenerSerializer(PrimaryModelSerializer):
     surge_protection = BooleanField(required=False, default=False)
     tcp_buffering = BooleanField(required=False, default=False)
     compression = BooleanField(required=False, default=False)
+    config_context = SerializerMethodField(read_only=True)
 
     class Meta:
         model = Listener
@@ -47,6 +51,8 @@ class ListenerSerializer(PrimaryModelSerializer):
             "surge_protection",
             "tcp_buffering",
             "compression",
+            "local_context_data",
+            "config_context",
             "comments",
             "tags",
             "custom_fields",
@@ -61,3 +67,7 @@ class ListenerSerializer(PrimaryModelSerializer):
             "name",
             "port",
         )
+
+    @extend_schema_field(JSONField(allow_null=True))
+    def get_config_context(self, obj):
+        return obj.get_config_context()

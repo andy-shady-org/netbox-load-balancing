@@ -10,6 +10,8 @@ except ImportError:
     from strawberry_django import FilterLookup as StrFilterLookup
 
 from netbox.graphql.filter_lookups import IntegerLookup
+from tenancy.graphql.filter_mixins import ContactFilterMixin, TenancyFilterMixin
+from extras.graphql.filter_mixins import ConfigContextFilterMixin
 
 from netbox.graphql.filters import PrimaryModelFilter
 from netbox_load_balancing.graphql.enums import (
@@ -25,7 +27,9 @@ __all__ = ("NetBoxLoadBalancingListenerFilter",)
 
 
 @strawberry_django.filter(Listener, lookups=True)
-class NetBoxLoadBalancingListenerFilter(PrimaryModelFilter):
+class NetBoxLoadBalancingListenerFilter(
+    ContactFilterMixin, TenancyFilterMixin, PrimaryModelFilter, ConfigContextFilterMixin
+):
     name: StrFilterLookup[str] | None = strawberry_django.filter_field()
     description: StrFilterLookup[str] | None = strawberry_django.filter_field()
     service: (

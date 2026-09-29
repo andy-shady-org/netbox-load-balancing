@@ -1,9 +1,12 @@
 from django.core.exceptions import ObjectDoesNotExist
+from drf_spectacular.utils import extend_schema_field
 from rest_framework.serializers import (
     HyperlinkedIdentityField,
     BooleanField,
     CharField,
     ValidationError,
+    SerializerMethodField,
+    JSONField,
 )
 from netbox.api.serializers import PrimaryModelSerializer
 from ipam.api.serializers import IPAddressSerializer
@@ -22,6 +25,7 @@ class VirtualIPSerializer(PrimaryModelSerializer):
     address = IPAddressSerializer(nested=True, required=False, allow_null=True)
     disabled = BooleanField(required=False, default=False)
     route_health_injection = BooleanField(required=False, default=False)
+    config_context = SerializerMethodField(read_only=True)
 
     class Meta:
         model = VirtualIP
@@ -39,6 +43,8 @@ class VirtualIPSerializer(PrimaryModelSerializer):
             "comments",
             "tags",
             "custom_fields",
+            "local_context_data",
+            "config_context",
             "created",
             "last_updated",
         )
@@ -52,6 +58,10 @@ class VirtualIPSerializer(PrimaryModelSerializer):
             "dns_name",
             "route_health_injection",
         )
+
+    @extend_schema_field(JSONField(allow_null=True))
+    def get_config_context(self, obj):
+        return obj.get_config_context()
 
     def validate(self, data):
         error_message = {}

@@ -21,6 +21,7 @@ class VirtualIPPoolSerializer(PrimaryModelSerializer):
     )
     tenant = TenantSerializer(nested=True, required=False, allow_null=True)
     disabled = BooleanField(required=False, default=False)
+    config_context = SerializerMethodField(read_only=True)
 
     class Meta:
         model = VirtualIPPool
@@ -35,6 +36,8 @@ class VirtualIPPoolSerializer(PrimaryModelSerializer):
             "comments",
             "tags",
             "custom_fields",
+            "local_context_data",
+            "config_context",
             "created",
             "last_updated",
         )
@@ -46,6 +49,10 @@ class VirtualIPPoolSerializer(PrimaryModelSerializer):
             "disabled",
             "name",
         )
+
+    @extend_schema_field(JSONField(allow_null=True))
+    def get_config_context(self, obj):
+        return obj.get_config_context()
 
 
 class VirtualIPPoolAssignmentSerializer(NetBoxModelSerializer):

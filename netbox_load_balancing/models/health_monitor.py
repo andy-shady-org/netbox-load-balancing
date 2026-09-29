@@ -4,10 +4,12 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.postgres.fields import ArrayField
+from extras.querysets import ConfigContextModelQuerySet
 from netbox.models import PrimaryModel, NetBoxModel
 from netbox.models.features import ContactsMixin
 from netbox.search import SearchIndex, register_search
 
+from netbox_load_balancing.mixins import LBServiceConfigContextModelMixin
 from netbox_load_balancing.models import Pool
 from netbox_load_balancing.constants import HEALTH_MONITOR_ASSIGNMENT_MODELS
 from netbox_load_balancing.choices import (
@@ -15,12 +17,21 @@ from netbox_load_balancing.choices import (
     HealthMonitorHTTPVersionChoices,
 )
 
-_all__ = ("HealthMonitor", "HealthMonitorAssignment", "HealthMonitorIndex")
+__all__ = ("HealthMonitor", "HealthMonitorAssignment", "HealthMonitorIndex")
 
 
-class HealthMonitor(ContactsMixin, PrimaryModel):
+class HealthMonitor(LBServiceConfigContextModelMixin, ContactsMixin, PrimaryModel):
+    objects = ConfigContextModelQuerySet.as_manager()
+
     name = models.CharField(
         max_length=255,
+    )
+    tenant = models.ForeignKey(
+        to="tenancy.Tenant",
+        on_delete=models.SET_NULL,
+        related_name="%(class)s_related",
+        blank=True,
+        null=True,
     )
     template = models.CharField(
         max_length=255,

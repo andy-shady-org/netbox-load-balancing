@@ -8,6 +8,8 @@ from netbox.forms import (
     PrimaryModelForm,
 )
 
+from tenancy.forms import TenancyForm, TenancyFilterForm
+from extras.forms import LocalConfigContextFilterForm
 from utilities.forms.rendering import FieldSet, ObjectAttribute
 from utilities.forms.fields import (
     DynamicModelChoiceField,
@@ -15,8 +17,10 @@ from utilities.forms.fields import (
     TagFilterField,
     CommentField,
     CSVModelChoiceField,
+    JSONField,
 )
 from ipam.models import IPAddress
+from tenancy.models import Tenant, TenantGroup
 
 from netbox_load_balancing.models import (
     Member,
@@ -32,7 +36,7 @@ __all__ = (
 )
 
 
-class MemberForm(PrimaryModelForm):
+class MemberForm(TenancyForm, PrimaryModelForm):
     name = forms.CharField(max_length=255, required=True)
     ip_address = DynamicModelChoiceField(
         queryset=IPAddress.objects.all(),
@@ -50,7 +54,14 @@ class MemberForm(PrimaryModelForm):
             "disabled",
             name=_("LB Member"),
         ),
+        FieldSet("tenant_group", "tenant", name=_("Tenancy")),
         FieldSet("tags", name=_("Tags")),
+        FieldSet("local_context_data", name=_("Local Config Context Data")),
+    )
+    local_context_data = JSONField(
+        required=False,
+        label="",
+        widget=forms.Textarea(attrs={"aria-label": _("Local config context data")}),
     )
     comments = CommentField()
 
@@ -63,16 +74,21 @@ class MemberForm(PrimaryModelForm):
             "disabled",
             "ip_address",
             "reference",
+            "tenant_group",
+            "tenant",
             "comments",
             "tags",
+            "local_context_data",
         ]
 
 
-class MemberFilterForm(PrimaryModelFilterSetForm):
+class MemberFilterForm(LocalConfigContextFilterForm, PrimaryModelFilterSetForm):
     model = Member
     fieldsets = (
         FieldSet("q", "filter_id", "tag", "owner_id"),
         FieldSet("name", "ip_address", "reference", "disabled", name=_("LB Member")),
+        FieldSet("tenant_group_id", "tenant_id", name=_("Tenancy")),
+        FieldSet("local_context_data", name=_("Local Config Context Data")),
     )
     ip_address = DynamicModelMultipleChoiceField(
         queryset=IPAddress.objects.all(),
@@ -85,6 +101,12 @@ class MemberFilterForm(PrimaryModelFilterSetForm):
 
 
 class MemberImportForm(PrimaryModelImportForm):
+    tenant = CSVModelChoiceField(
+        queryset=Tenant.objects.all(),
+        required=False,
+        to_field_name="name",
+        label=_("Tenant"),
+    )
     name = forms.CharField(max_length=255, required=True)
     ip_address = CSVModelChoiceField(
         queryset=IPAddress.objects.all(),
@@ -104,11 +126,22 @@ class MemberImportForm(PrimaryModelImportForm):
             "description",
             "disabled",
             "tags",
+            "local_context_data",
         )
 
 
 class MemberBulkEditForm(PrimaryModelBulkEditForm):
     model = Member
+    tenant_group = DynamicModelChoiceField(
+        queryset=TenantGroup.objects.all(),
+        required=False,
+        label=_("Tenant Group"),
+    )
+    tenant = DynamicModelChoiceField(
+        queryset=Tenant.objects.all(),
+        required=False,
+        label=_("Tenant"),
+    )
     description = forms.CharField(max_length=200, required=False)
     disabled = forms.BooleanField(required=False)
     ip_address = DynamicModelMultipleChoiceField(
@@ -122,6 +155,7 @@ class MemberBulkEditForm(PrimaryModelBulkEditForm):
         FieldSet(
             "ip_address", "description", "reference", "disabled", name=_("LB Member")
         ),
+        FieldSet("tenant_group", "tenant", name=_("Tenancy")),
         FieldSet("tags", name=_("Tags")),
     )
 

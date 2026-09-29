@@ -10,8 +10,9 @@ except ImportError:
     from strawberry_django import FilterLookup as StrFilterLookup
 
 from netbox.graphql.filters import PrimaryModelFilter
-from tenancy.graphql.filter_mixins import ContactFilterMixin
+from tenancy.graphql.filter_mixins import ContactFilterMixin, TenancyFilterMixin
 from ipam.graphql.filters import IPAddressFilter
+from extras.graphql.filter_mixins import ConfigContextFilterMixin
 
 from netbox_load_balancing.models import (
     Member,
@@ -21,7 +22,9 @@ __all__ = ("NetBoxLoadBalancingMemberFilter",)
 
 
 @strawberry_django.filter(Member, lookups=True)
-class NetBoxLoadBalancingMemberFilter(ContactFilterMixin, PrimaryModelFilter):
+class NetBoxLoadBalancingMemberFilter(
+    ContactFilterMixin, TenancyFilterMixin, PrimaryModelFilter, ConfigContextFilterMixin
+):
     name: StrFilterLookup[str] | None = strawberry_django.filter_field()
     description: StrFilterLookup[str] | None = strawberry_django.filter_field()
     reference: StrFilterLookup[str] | None = strawberry_django.filter_field()
