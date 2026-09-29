@@ -37,8 +37,18 @@ class ListenerFiterSetTestCase(TestCase, ChangeLoggedFilterSetTestMixin):
         LBService.objects.bulk_create(cls.services)
 
         cls.listeners = (
-            Listener(name="listener-1", service=cls.services[0], port=10, tenant=cls.tenants[0]),
-            Listener(name="listener-2", service=cls.services[1], port=10, tenant=cls.tenants[1]),
+            Listener(
+                name="listener-1",
+                service=cls.services[0],
+                port=10,
+                tenant=cls.tenants[0],
+            ),
+            Listener(
+                name="listener-2",
+                service=cls.services[1],
+                port=10,
+                tenant=cls.tenants[1],
+            ),
             Listener(
                 name="listener-3",
                 service=cls.services[2],
