@@ -5,17 +5,21 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 
 from dcim.models import Device, VirtualDeviceContext
 from virtualization.models import VirtualMachine
+from extras.querysets import ConfigContextModelQuerySet
 from netbox.models import PrimaryModel, NetBoxModel
 from netbox.models.features import ContactsMixin
 from netbox.search import SearchIndex, register_search
 
+from netbox_load_balancing.mixins import LBServiceConfigContextModelMixin
 from netbox_load_balancing.constants import SERVICE_ASSIGNMENT_MODELS
 from netbox_load_balancing.models import VirtualIP
 
-_all__ = ("LBService", "LBServiceAssignment", "ServiceIndex")
+__all__ = ("LBService", "LBServiceAssignment", "LBServiceIndex")
 
 
-class LBService(ContactsMixin, PrimaryModel):
+class LBService(ContactsMixin, LBServiceConfigContextModelMixin, PrimaryModel):
+    objects = ConfigContextModelQuerySet.as_manager()
+
     name = models.CharField(
         max_length=255,
     )

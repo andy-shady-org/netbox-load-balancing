@@ -27,6 +27,7 @@ class PoolSerializer(PrimaryModelSerializer):
     member_port = IntegerField(
         required=False, validators=[MinValueValidator(1), MaxValueValidator(65535)]
     )
+    config_context = SerializerMethodField(read_only=True)
 
     class Meta:
         model = Pool
@@ -47,6 +48,8 @@ class PoolSerializer(PrimaryModelSerializer):
             "comments",
             "tags",
             "custom_fields",
+            "local_context_data",
+            "config_context",
             "created",
             "last_updated",
         )
@@ -58,6 +61,10 @@ class PoolSerializer(PrimaryModelSerializer):
             "disabled",
             "name",
         )
+
+    @extend_schema_field(JSONField(allow_null=True))
+    def get_config_context(self, obj):
+        return obj.get_config_context()
 
     def create(self, validated_data):
         listeners = validated_data.pop("listeners", None)

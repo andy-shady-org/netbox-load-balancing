@@ -9,12 +9,14 @@ from netbox.forms import (
 )
 
 from tenancy.forms import TenancyForm, TenancyFilterForm
+from extras.forms import LocalConfigContextFilterForm
 from utilities.forms.rendering import FieldSet, ObjectAttribute
 from utilities.forms.fields import (
     DynamicModelChoiceField,
     TagFilterField,
     CommentField,
     CSVModelChoiceField,
+    JSONField,
 )
 
 from tenancy.models import Tenant, TenantGroup
@@ -41,6 +43,12 @@ class VirtualIPPoolForm(TenancyForm, PrimaryModelForm):
         FieldSet("name", "description", "disabled", name=_("Virtual IP Pool")),
         FieldSet("tenant_group", "tenant", name=_("Tenancy")),
         FieldSet("tags", name=_("Tags")),
+        FieldSet("local_context_data", name=_("Local Config Context Data")),
+    )
+    local_context_data = JSONField(
+        required=False,
+        label="",
+        widget=forms.Textarea(attrs={"aria-label": _("Local config context data")}),
     )
     comments = CommentField()
 
@@ -55,15 +63,19 @@ class VirtualIPPoolForm(TenancyForm, PrimaryModelForm):
             "tenant",
             "comments",
             "tags",
+            "local_context_data",
         ]
 
 
-class VirtualIPPoolFilterForm(TenancyFilterForm, PrimaryModelFilterSetForm):
+class VirtualIPPoolFilterForm(
+    LocalConfigContextFilterForm, TenancyFilterForm, PrimaryModelFilterSetForm
+):
     model = VirtualIPPool
     fieldsets = (
         FieldSet("q", "filter_id", "tag", "owner_id"),
         FieldSet("name", name=_("Virtual IP Pool")),
         FieldSet("tenant_group_id", "tenant_id", name=_("Tenancy")),
+        FieldSet("local_context_data", name=_("Local Config Context Data")),
     )
     tags = TagFilterField(model)
 
@@ -85,6 +97,7 @@ class VirtualIPPoolImportForm(PrimaryModelImportForm):
             "disabled",
             "tenant",
             "tags",
+            "local_context_data",
         )
 
 

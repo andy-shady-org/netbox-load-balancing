@@ -1,14 +1,28 @@
 from django.urls import reverse
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from extras.querysets import ConfigContextModelQuerySet
 from netbox.models import PrimaryModel
 from netbox.models.features import ContactsMixin
 from netbox.search import SearchIndex, register_search
 from ipam.validators import DNSValidator
 
+from netbox_load_balancing.mixins import LBServiceConfigContextModelMixin
 
-class VirtualIP(ContactsMixin, PrimaryModel):
+__all__ = ("VirtualIP", "VirtualIPIndex")
+
+
+class VirtualIP(ContactsMixin, LBServiceConfigContextModelMixin, PrimaryModel):
+    objects = ConfigContextModelQuerySet.as_manager()
+
     name = models.CharField(max_length=255)
+    tenant = models.ForeignKey(
+        to="tenancy.Tenant",
+        on_delete=models.SET_NULL,
+        related_name="%(class)s_related",
+        blank=True,
+        null=True,
+    )
     dns_name = models.CharField(
         max_length=255,
         blank=True,

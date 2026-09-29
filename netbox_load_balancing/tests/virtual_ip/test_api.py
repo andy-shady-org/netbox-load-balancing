@@ -38,6 +38,9 @@ class VirtualIPAPITestCase(
     bulk_update_data = {
         "description": "Test Virtual IP",
     }
+    bulk_update_invalid_data = {
+        "disabled": "invalid_disabled",
+    }
 
     @classmethod
     def setUpTestData(cls):

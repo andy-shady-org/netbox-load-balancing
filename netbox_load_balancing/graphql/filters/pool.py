@@ -11,7 +11,9 @@ except ImportError:
 from netbox.graphql.filter_lookups import IntegerLookup
 
 from netbox.graphql.filters import PrimaryModelFilter
-from tenancy.graphql.filter_mixins import ContactFilterMixin
+from tenancy.graphql.filter_mixins import ContactFilterMixin, TenancyFilterMixin
+from extras.graphql.filter_mixins import ConfigContextFilterMixin
+
 from netbox_load_balancing.graphql.enums import (
     NetBoxLoadBalancingPoolAlgorythmEnum,
     NetBoxLoadBalancingPoolSessionPersistenceEnum,
@@ -27,7 +29,9 @@ __all__ = ("NetBoxLoadBalancingPoolFilter",)
 
 
 @strawberry_django.filter(Pool, lookups=True)
-class NetBoxLoadBalancingPoolFilter(ContactFilterMixin, PrimaryModelFilter):
+class NetBoxLoadBalancingPoolFilter(
+    ContactFilterMixin, TenancyFilterMixin, PrimaryModelFilter, ConfigContextFilterMixin
+):
     name: StrFilterLookup[str] | None = strawberry_django.filter_field()
     description: StrFilterLookup[str] | None = strawberry_django.filter_field()
     listeners: (

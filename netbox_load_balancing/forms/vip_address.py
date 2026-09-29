@@ -9,6 +9,8 @@ from netbox.forms import (
     PrimaryModelForm,
 )
 
+from tenancy.forms import TenancyForm, TenancyFilterForm
+from extras.forms import LocalConfigContextFilterForm
 from utilities.forms.rendering import FieldSet
 from utilities.forms.fields import (
     DynamicModelChoiceField,
@@ -16,9 +18,11 @@ from utilities.forms.fields import (
     CommentField,
     CSVModelChoiceField,
     DynamicModelMultipleChoiceField,
+    JSONField,
 )
 
 from ipam.models import IPAddress
+from tenancy.models import Tenant, TenantGroup
 
 from netbox_load_balancing.models import (
     VirtualIP,
@@ -33,7 +37,7 @@ __all__ = (
 )
 
 
-class VirtualIPForm(PrimaryModelForm):
+class VirtualIPForm(TenancyForm, PrimaryModelForm):
     name = forms.CharField(max_length=255, required=True)
     dns_name = forms.CharField(max_length=255, required=False, label=_("DNS name"))
     virtual_pool = DynamicModelChoiceField(
@@ -57,7 +61,14 @@ class VirtualIPForm(PrimaryModelForm):
             "disabled",
             name=_("Virtual IP"),
         ),
+        FieldSet("tenant_group", "tenant", name=_("Tenancy")),
         FieldSet("tags", name=_("Tags")),
+        FieldSet("local_context_data", name=_("Local Config Context Data")),
+    )
+    local_context_data = JSONField(
+        required=False,
+        label="",
+        widget=forms.Textarea(attrs={"aria-label": _("Local config context data")}),
     )
     comments = CommentField()
 
@@ -72,8 +83,11 @@ class VirtualIPForm(PrimaryModelForm):
             "disabled",
             "address",
             "virtual_pool",
+            "tenant_group",
+            "tenant",
             "comments",
             "tags",
+            "local_context_data",
         ]
 
     def clean(self):
@@ -150,7 +164,9 @@ class VirtualIPForm(PrimaryModelForm):
         return self.cleaned_data
 
 
-class VirtualIPFilterForm(PrimaryModelFilterSetForm):
+class VirtualIPFilterForm(
+    LocalConfigContextFilterForm, PrimaryModelFilterSetForm, TenancyFilterForm
+):
     model = VirtualIP
     fieldsets = (
         FieldSet("q", "filter_id", "tag", "owner_id"),
@@ -163,6 +179,8 @@ class VirtualIPFilterForm(PrimaryModelFilterSetForm):
             "route_health_injection",
             name=_("Virtual IP"),
         ),
+        FieldSet("tenant_group_id", "tenant_id", name=_("Tenancy")),
+        FieldSet("local_context_data", name=_("Local Config Context Data")),
     )
     virtual_pool = DynamicModelMultipleChoiceField(
         queryset=VirtualIPPool.objects.all(),
@@ -178,6 +196,12 @@ class VirtualIPFilterForm(PrimaryModelFilterSetForm):
 
 
 class VirtualIPImportForm(PrimaryModelImportForm):
+    tenant = CSVModelChoiceField(
+        queryset=Tenant.objects.all(),
+        required=False,
+        to_field_name="name",
+        label=_("Tenant"),
+    )
     name = forms.CharField(max_length=255, required=True)
     dns_name = forms.CharField(max_length=255, required=False, label=_("DNS name"))
     virtual_pool = CSVModelChoiceField(
@@ -207,6 +231,7 @@ class VirtualIPImportForm(PrimaryModelImportForm):
             "disabled",
             "route_health_injection",
             "tags",
+            "local_context_data",
         )
 
     def clean(self):
@@ -281,6 +306,16 @@ class VirtualIPImportForm(PrimaryModelImportForm):
 
 class VirtualIPBulkEditForm(PrimaryModelBulkEditForm):
     model = VirtualIP
+    tenant_group = DynamicModelChoiceField(
+        queryset=TenantGroup.objects.all(),
+        required=False,
+        label=_("Tenant Group"),
+    )
+    tenant = DynamicModelChoiceField(
+        queryset=Tenant.objects.all(),
+        required=False,
+        label=_("Tenant"),
+    )
     dns_name = forms.CharField(max_length=255, required=False, label=_("DNS name"))
     description = forms.CharField(max_length=200, required=False)
     disabled = forms.BooleanField(required=False)
@@ -295,9 +330,6 @@ class VirtualIPBulkEditForm(PrimaryModelBulkEditForm):
         queryset=IPAddress.objects.all(),
         required=False,
         label=_("IP Address"),
-        # query_params={
-        #     'site_id': '$site'
-        # }
     )
     nullable_fields = ["description"]
     fieldsets = (
@@ -310,5 +342,6 @@ class VirtualIPBulkEditForm(PrimaryModelBulkEditForm):
             "route_health_injection",
             name=_("Virtual IP"),
         ),
+        FieldSet("tenant_group", "tenant", name=_("Tenancy")),
         FieldSet("tags", name=_("Tags")),
     )

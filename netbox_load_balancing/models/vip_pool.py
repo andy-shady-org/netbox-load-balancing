@@ -3,15 +3,21 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.core.validators import MaxValueValidator, MinValueValidator
+from extras.querysets import ConfigContextModelQuerySet
 from netbox.models import PrimaryModel, NetBoxModel
 from netbox.models.features import ContactsMixin
 from netbox.search import SearchIndex, register_search
 from ipam.models import IPRange, Prefix, VLAN
 
+from netbox_load_balancing.mixins import LBServiceConfigContextModelMixin
 from netbox_load_balancing.constants import VIP_POOL_ASSIGNMENT_MODELS
 
+__all__ = ("VirtualIPPool", "VirtualIPPoolAssignment", "VirtualIPPoolIndex")
 
-class VirtualIPPool(ContactsMixin, PrimaryModel):
+
+class VirtualIPPool(LBServiceConfigContextModelMixin, ContactsMixin, PrimaryModel):
+    objects = ConfigContextModelQuerySet.as_manager()
+
     name = models.CharField()
     disabled = models.BooleanField(
         default=False,

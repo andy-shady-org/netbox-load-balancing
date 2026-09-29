@@ -32,6 +32,7 @@ class HealthMonitorSerializer(PrimaryModelSerializer):
     probe_interval = IntegerField(required=False)
     response_timeout = IntegerField(required=False)
     disabled = BooleanField(required=False, default=False)
+    config_context = SerializerMethodField(read_only=True)
 
     class Meta:
         model = HealthMonitor
@@ -56,6 +57,8 @@ class HealthMonitorSerializer(PrimaryModelSerializer):
             "comments",
             "tags",
             "custom_fields",
+            "local_context_data",
+            "config_context",
             "created",
             "last_updated",
         )
@@ -69,6 +72,10 @@ class HealthMonitorSerializer(PrimaryModelSerializer):
             "url",
             "name",
         )
+
+    @extend_schema_field(JSONField(allow_null=True))
+    def get_config_context(self, obj):
+        return obj.get_config_context()
 
 
 class HealthMonitorAssignmentSerializer(NetBoxModelSerializer):

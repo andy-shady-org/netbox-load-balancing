@@ -1,6 +1,7 @@
 from django.test import TestCase
 
 from utilities.testing import ChangeLoggedFilterSetTestMixin
+from tenancy.models import Tenant, TenantGroup
 
 from netbox_load_balancing.models import LBService, Pool, Listener
 from netbox_load_balancing.filtersets import PoolFilterSet
@@ -17,6 +18,21 @@ class PoolFiterSetTestCase(TestCase, ChangeLoggedFilterSetTestMixin):
 
     @classmethod
     def setUpTestData(cls):
+        cls.tenant_groups = (
+            TenantGroup(name="Tenant group 1", slug="tenant-group-1"),
+            TenantGroup(name="Tenant group 2", slug="tenant-group-2"),
+            TenantGroup(name="Tenant group 3", slug="tenant-group-3"),
+        )
+        for tenantgroup in cls.tenant_groups:
+            tenantgroup.save()
+
+        cls.tenants = (
+            Tenant(name="Tenant 1", slug="tenant-1", group=cls.tenant_groups[0]),
+            Tenant(name="Tenant 2", slug="tenant-2", group=cls.tenant_groups[1]),
+            Tenant(name="Tenant 3", slug="tenant-3", group=cls.tenant_groups[2]),
+        )
+        Tenant.objects.bulk_create(cls.tenants)
+
         cls.services = (
             LBService(name="service-1", reference="1.1.1.4/32", disabled=True),
             LBService(name="service-2", reference="1.1.1.5/32", disabled=True),
@@ -37,18 +53,21 @@ class PoolFiterSetTestCase(TestCase, ChangeLoggedFilterSetTestMixin):
                 member_port=1,
                 disabled=True,
                 backup_persistence=PoolBackupSessionPersistenceChoices.SOURCE_IP,
+                tenant=cls.tenants[0],
             ),
             Pool(
                 name="pool-2",
                 member_port=2,
                 disabled=True,
                 algorythm=PoolAlgorythmChoices.ROUND_ROBIN,
+                tenant=cls.tenants[1],
             ),
             Pool(
                 name="pool-3",
                 member_port=2,
                 disabled=False,
                 session_persistence=PoolSessionPersistenceChoices.SSL_BRIDGE,
+                tenant=cls.tenants[2],
             ),
         )
         Pool.objects.bulk_create(cls.pools)
@@ -58,6 +77,12 @@ class PoolFiterSetTestCase(TestCase, ChangeLoggedFilterSetTestMixin):
 
     def test_name(self):
         params = {"name": ["pool-1", "pool-2"]}
+        self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
+
+    def test_tenant(self):
+        params = {"tenant_id": [self.tenants[0].pk, self.tenants[1].pk]}
+        self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
+        params = {"tenant": [self.tenants[0].slug, self.tenants[1].slug]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
     def test_disabled(self):

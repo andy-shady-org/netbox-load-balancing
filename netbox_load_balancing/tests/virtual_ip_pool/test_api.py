@@ -36,6 +36,9 @@ class VirtualIPPoolAPITestCase(
     bulk_update_data = {
         "description": "Test Service",
     }
+    bulk_update_invalid_data = {
+        "disabled": "invalid_disabled",
+    }
 
     @classmethod
     def setUpTestData(cls):

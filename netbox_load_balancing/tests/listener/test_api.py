@@ -23,6 +23,9 @@ class ListenerAPITestCase(
     bulk_update_data = {
         "description": "Test Service",
     }
+    bulk_update_invalid_data = {
+        "service": "invalid_service",
+    }
 
     @classmethod
     def setUpTestData(cls):

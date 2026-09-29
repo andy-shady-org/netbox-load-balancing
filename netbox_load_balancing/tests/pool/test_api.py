@@ -23,6 +23,9 @@ class PoolAPITestCase(
     bulk_update_data = {
         "description": "Test Service",
     }
+    bulk_update_invalid_data = {
+        "member_port": "invalid_port",
+    }
 
     @classmethod
     def setUpTestData(cls):

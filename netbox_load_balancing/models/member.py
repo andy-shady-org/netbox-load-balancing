@@ -3,19 +3,30 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.core.validators import MaxValueValidator, MinValueValidator
+from extras.querysets import ConfigContextModelQuerySet
 from netbox.models import PrimaryModel, NetBoxModel
 from netbox.models.features import ContactsMixin
 from netbox.search import SearchIndex, register_search
 
+from netbox_load_balancing.mixins import LBServiceConfigContextModelMixin
 from netbox_load_balancing.models import Pool, HealthMonitor
 from netbox_load_balancing.constants import MEMBER_ASSIGNMENT_MODELS
 
-_all__ = ("Member", "MemberAssignment", "MemberIndex")
+__all__ = ("Member", "MemberAssignment", "MemberIndex")
 
 
-class Member(ContactsMixin, PrimaryModel):
+class Member(LBServiceConfigContextModelMixin, ContactsMixin, PrimaryModel):
+    objects = ConfigContextModelQuerySet.as_manager()
+
     name = models.CharField(
         max_length=255,
+    )
+    tenant = models.ForeignKey(
+        to="tenancy.Tenant",
+        on_delete=models.SET_NULL,
+        related_name="%(class)s_related",
+        blank=True,
+        null=True,
     )
     reference = models.CharField(
         max_length=255,

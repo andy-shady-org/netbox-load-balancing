@@ -1,9 +1,17 @@
 from django.utils.translation import gettext_lazy as _
-
 from netbox.views import generic
 from utilities.views import register_model_view, ViewTab
-
-from netbox_load_balancing.models import LBService
+from extras.views import ObjectConfigContextView
+from netbox_load_balancing.mixins import LBServiceConfigContextViewMixin
+from netbox_load_balancing.models import (
+    LBService,
+    HealthMonitor,
+    Listener,
+    Member,
+    Pool,
+    VirtualIP,
+    VirtualIPPool,
+)
 from netbox_load_balancing.svg import LBServiceDiagramSVG
 
 
@@ -50,3 +58,53 @@ class LBServiceDiagramView(generic.ObjectView):
             "total_members": total_members,
             "total_infra": total_infra,
         }
+
+
+class _LBServiceConfigContextBaseView(
+    LBServiceConfigContextViewMixin, ObjectConfigContextView
+):
+    """Base view for config context tabs. Combines mixin with ObjectConfigContextView."""
+
+    pass
+
+
+@register_model_view(LBService, "configcontext", path="config-context")
+class LBServiceConfigContextView(_LBServiceConfigContextBaseView):
+    queryset = LBService.objects.all()
+    tab = ViewTab(label=_("Config Context"), weight=2000)
+
+
+@register_model_view(HealthMonitor, "configcontext", path="config-context")
+class HealthMonitorConfigContextView(_LBServiceConfigContextBaseView):
+    queryset = HealthMonitor.objects.all()
+    tab = ViewTab(label=_("Config Context"), weight=2000)
+
+
+@register_model_view(Listener, "configcontext", path="config-context")
+class ListenerConfigContextView(_LBServiceConfigContextBaseView):
+    queryset = Listener.objects.all()
+    tab = ViewTab(label=_("Config Context"), weight=2000)
+
+
+@register_model_view(VirtualIP, "configcontext", path="config-context")
+class VirtualIPConfigContextView(_LBServiceConfigContextBaseView):
+    queryset = VirtualIP.objects.all()
+    tab = ViewTab(label=_("Config Context"), weight=2000)
+
+
+@register_model_view(Member, "configcontext", path="config-context")
+class MemberConfigContextView(_LBServiceConfigContextBaseView):
+    queryset = Member.objects.all()
+    tab = ViewTab(label=_("Config Context"), weight=2000)
+
+
+@register_model_view(Pool, "configcontext", path="config-context")
+class PoolConfigContextView(_LBServiceConfigContextBaseView):
+    queryset = Pool.objects.all()
+    tab = ViewTab(label=_("Config Context"), weight=2000)
+
+
+@register_model_view(VirtualIPPool, "configcontext", path="config-context")
+class VirtualIPPoolConfigContextView(_LBServiceConfigContextBaseView):
+    queryset = VirtualIPPool.objects.all()
+    tab = ViewTab(label=_("Config Context"), weight=2000)

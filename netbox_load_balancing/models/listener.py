@@ -2,16 +2,20 @@ from django.urls import reverse
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import MaxValueValidator, MinValueValidator
+from extras.querysets import ConfigContextModelQuerySet
 from netbox.models import PrimaryModel
 from netbox.models.features import ContactsMixin
 from netbox.search import SearchIndex, register_search
 
+from netbox_load_balancing.mixins import LBServiceConfigContextModelMixin
 from netbox_load_balancing.choices import ListenerProtocolChoices
 
-_all__ = ("Listener", "ListenerIndex")
+__all__ = ("Listener", "ListenerIndex")
 
 
-class Listener(ContactsMixin, PrimaryModel):
+class Listener(LBServiceConfigContextModelMixin, ContactsMixin, PrimaryModel):
+    objects = ConfigContextModelQuerySet.as_manager()
+
     name = models.CharField(
         max_length=255,
     )
@@ -19,6 +23,13 @@ class Listener(ContactsMixin, PrimaryModel):
         to="netbox_load_balancing.LBService",
         on_delete=models.CASCADE,
         related_name="%(class)s_service",
+    )
+    tenant = models.ForeignKey(
+        to="tenancy.Tenant",
+        on_delete=models.SET_NULL,
+        related_name="%(class)s_related",
+        blank=True,
+        null=True,
     )
     port = models.PositiveIntegerField(
         validators=[

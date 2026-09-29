@@ -3,6 +3,8 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from netbox.filtersets import NetBoxModelFilterSet, PrimaryModelFilterSet
+from tenancy.filtersets import TenancyFilterSet
+from extras.filtersets import LocalConfigContextFilterSet
 from utilities.filters import (
     ContentTypeFilter,
     MultiValueCharFilter,
@@ -25,7 +27,9 @@ from netbox_load_balancing.choices import (
 
 
 @register_filterset
-class PoolFilterSet(PrimaryModelFilterSet):
+class PoolFilterSet(
+    LocalConfigContextFilterSet, TenancyFilterSet, PrimaryModelFilterSet
+):
     listener_id = django_filters.ModelMultipleChoiceFilter(
         queryset=Listener.objects.all(),
         field_name="listeners",
