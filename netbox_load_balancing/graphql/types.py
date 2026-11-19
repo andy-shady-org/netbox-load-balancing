@@ -55,10 +55,10 @@ class NetBoxLoadBalancingListenerType(PrimaryObjectType):
     protocol: str
     source_nat: bool
     use_proxy_port: bool
-    max_clients: int
-    max_requests: int
-    client_timeout: int
-    server_timeout: int
+    max_clients: int | None
+    max_requests: int | None
+    client_timeout: int | None
+    server_timeout: int | None
     client_keepalive: bool
     surge_protection: bool
     tcp_buffering: bool
@@ -77,7 +77,7 @@ class NetBoxLoadBalancingHealthMonitorType(PrimaryObjectType):
     http_response: str | None
     monitor_host: str | None
     http_version: str
-    monitor_port: int
+    monitor_port: int | None
     http_secure: bool
     http_response_codes: List[int] | None
     probe_interval: int | None
@@ -101,9 +101,9 @@ class NetBoxLoadBalancingPoolType(PrimaryObjectType):
     algorythm: str
     session_persistence: str
     backup_persistence: str
-    persistence_timeout: int
-    backup_timeout: int
-    member_port: int
+    persistence_timeout: int | None
+    backup_timeout: int | None
+    member_port: int | None
     disabled: bool
 
 
