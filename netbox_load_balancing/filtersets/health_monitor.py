@@ -68,9 +68,9 @@ class HealthMonitorFilterSet(
             | Q(monitor_url__icontains=value)
             | Q(http_response__icontains=value)
             | Q(monitor_host__icontains=value)
-            | Q(monitor_port=value)
-            | Q(probe_interval=value)
-            | Q(response_timeout=value)
+            | Q(monitor_port__iexact=value)
+            | Q(probe_interval__iexact=value)
+            | Q(response_timeout__iexact=value)
         )
         return queryset.filter(qs_filter)
 
