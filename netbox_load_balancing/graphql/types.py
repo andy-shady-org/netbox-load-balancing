@@ -9,21 +9,31 @@ from tenancy.graphql.types import TenantType
 
 from netbox_load_balancing.models import (
     LBService,
+    LBServiceAssignment,
     Listener,
     HealthMonitor,
+    HealthMonitorAssignment,
     Pool,
+    PoolAssignment,
     Member,
+    MemberAssignment,
     VirtualIPPool,
+    VirtualIPPoolAssignment,
     VirtualIP,
 )
 
 from .filters import (
     NetBoxLoadBalancingLBServiceFilter,
+    NetBoxLoadBalancingLBServiceAssignmentFilter,
     NetBoxLoadBalancingListenerFilter,
     NetBoxLoadBalancingHealthMonitorFilter,
+    NetBoxLoadBalancingHealthMonitorAssignmentsFilter,
     NetBoxLoadBalancingPoolFilter,
+    NetBoxLoadBalancingPoolAssignmentFilter,
     NetBoxLoadBalancingMemberFilter,
+    NetBoxLoadBalancingMemberAssignmentFilter,
     NetBoxLoadBalancingVirtualIPPoolFilter,
+    NetBoxLoadBalancingVirtualIPPoolAssignmentFilter,
     NetBoxLoadBalancingVirtualIPFilter,
 )
 
@@ -144,3 +154,98 @@ class NetBoxLoadBalancingVirtualIPType(PrimaryObjectType):
     dns_name: str
     disabled: bool
     route_health_injection: bool
+
+@strawberry_django.type(
+    HealthMonitorAssignment, fields="__all__", filters=NetBoxLoadBalancingHealthMonitorAssignmentsFilter
+)
+class NetBoxLoadBalancingHealthMonitorAssignmentType(PrimaryObjectType):
+    monitor: (
+            Annotated[
+                "NetBoxLoadBalancingHealthMonitorType",
+                strawberry.lazy("netbox_load_balancing.graphql.types"),
+            ]
+        | None
+    )
+    assigned_object: (
+            Annotated[
+                "NetBoxLoadBalancingPoolType",
+                strawberry.lazy("netbox_load_balancing.graphql.types"),
+            ]
+        | None
+    ) 
+
+@strawberry_django.type(
+    LBServiceAssignment, fields="__all__", filters=NetBoxLoadBalancingLBServiceAssignmentFilter
+)
+class NetBoxLoadBalancingLBServiceAssignmentType(PrimaryObjectType):
+    service: (
+            Annotated[
+                "NetBoxLoadBalancingLBServiceType",
+                strawberry.lazy("netbox_load_balancing.graphql.types"),
+            ]
+        | None
+    )
+    assigned_object: (
+            Annotated[
+                "NetBoxLoadBalancingVirtualIPType",
+                strawberry.lazy("netbox_load_balancing.graphql.types"),
+            ]
+        | None
+    ) 
+
+@strawberry_django.type(
+    MemberAssignment, fields="__all__", filters=NetBoxLoadBalancingMemberAssignmentFilter
+)
+class NetBoxLoadBalancingMemberAssignmentType(PrimaryObjectType):
+    member: (
+            Annotated[
+                "NetBoxLoadBalancingMemberType",
+                strawberry.lazy("netbox_load_balancing.graphql.types"),
+            ]
+        | None
+    )
+    assigned_object: (
+            Annotated[
+                "NetBoxLoadBalancingPoolType",
+                strawberry.lazy("netbox_load_balancing.graphql.types"),
+            ]
+        | None
+    ) 
+
+@strawberry_django.type(
+    PoolAssignment, fields="__all__", filters=NetBoxLoadBalancingPoolAssignmentFilter
+)
+class NetBoxLoadBalancingPoolAssignmentType(PrimaryObjectType):
+    pool: (
+            Annotated[
+                "NetBoxLoadBalancingPoolType",
+                strawberry.lazy("netbox_load_balancing.graphql.types"),
+            ]
+        | None
+    )
+    assigned_object: (
+            Annotated[
+                "NetBoxLoadBalancingLBServiceType",
+                strawberry.lazy("netbox_load_balancing.graphql.types"),
+            ]
+        | None
+    ) 
+
+@strawberry_django.type(
+    VirtualIPPoolAssignment, fields="__all__", filters=NetBoxLoadBalancingVirtualIPPoolAssignmentFilter
+)
+class NetBoxLoadBalancingVirtualIPPoolAssignmentType(PrimaryObjectType):
+    virtual_pool: (
+            Annotated[
+                "NetBoxLoadBalancingVirtualIPPoolType",
+                strawberry.lazy("netbox_load_balancing.graphql.types"),
+            ]
+        | None
+    )
+    assigned_object: (
+            Annotated[
+                "PrefixType",
+                strawberry.lazy("ipam.graphql.types"),
+            ]
+        | None
+    ) 
