@@ -95,6 +95,7 @@ class MemberAssignment(NetBoxModel):
         )
         verbose_name = _("LB Member Assignment")
         verbose_name_plural = _("LB Member Assignments")
+        ordering = ("assigned_object_type", "assigned_object_id", "member")
 
     def __str__(self):
         return f"{self.assigned_object}: {self.member}"

@@ -87,6 +87,7 @@ class VirtualIPPoolAssignment(NetBoxModel):
         )
         verbose_name = _("Virtual Pool Assignment")
         verbose_name_plural = _("Virtual Pool Assignments")
+        ordering = ("assigned_object_type", "assigned_object_id", "virtual_pool")
 
     def __str__(self):
         return f"{self.assigned_object}: {self.virtual_pool}"

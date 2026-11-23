@@ -78,6 +78,7 @@ class LBServiceAssignment(NetBoxModel):
         )
         verbose_name = _("LB Service Assignment")
         verbose_name_plural = _("LB Service Assignments")
+        ordering = ("assigned_object_type", "assigned_object_id", "service")
 
     def __str__(self):
         return f"{self.assigned_object}: {self.service}"

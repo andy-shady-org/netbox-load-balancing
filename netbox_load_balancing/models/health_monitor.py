@@ -165,6 +165,7 @@ class HealthMonitorAssignment(NetBoxModel):
         )
         verbose_name = _("LB Health Monitor Assignment")
         verbose_name_plural = _("LB Health Monitor Assignments")
+        ordering = ("assigned_object_type", "assigned_object_id", "monitor")
 
     def __str__(self):
         return f"{self.assigned_object}: {self.monitor}"
