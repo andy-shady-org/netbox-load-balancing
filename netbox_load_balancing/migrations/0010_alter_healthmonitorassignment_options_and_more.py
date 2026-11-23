@@ -6,28 +6,42 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('netbox_load_balancing', '0009_healthmonitor__config_context_data_and_more'),
+        ("netbox_load_balancing", "0009_healthmonitor__config_context_data_and_more"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='healthmonitorassignment',
-            options={'ordering': ('assigned_object_type', 'assigned_object_id', 'monitor')},
+            name="healthmonitorassignment",
+            options={
+                "ordering": ("assigned_object_type", "assigned_object_id", "monitor")
+            },
         ),
         migrations.AlterModelOptions(
-            name='lbserviceassignment',
-            options={'ordering': ('assigned_object_type', 'assigned_object_id', 'service')},
+            name="lbserviceassignment",
+            options={
+                "ordering": ("assigned_object_type", "assigned_object_id", "service")
+            },
         ),
         migrations.AlterModelOptions(
-            name='memberassignment',
-            options={'ordering': ('assigned_object_type', 'assigned_object_id', 'member')},
+            name="memberassignment",
+            options={
+                "ordering": ("assigned_object_type", "assigned_object_id", "member")
+            },
         ),
         migrations.AlterModelOptions(
-            name='poolassignment',
-            options={'ordering': ('assigned_object_type', 'assigned_object_id', 'pool')},
+            name="poolassignment",
+            options={
+                "ordering": ("assigned_object_type", "assigned_object_id", "pool")
+            },
         ),
         migrations.AlterModelOptions(
-            name='virtualippoolassignment',
-            options={'ordering': ('assigned_object_type', 'assigned_object_id', 'virtual_pool')},
+            name="virtualippoolassignment",
+            options={
+                "ordering": (
+                    "assigned_object_type",
+                    "assigned_object_id",
+                    "virtual_pool",
+                )
+            },
         ),
     ]

@@ -136,7 +136,7 @@ class PoolAssignment(NetBoxModel):
         )
         verbose_name = _("LB Pool Assignment")
         verbose_name_plural = _("LB Pool Assignments")
-        ordering = ('assigned_object_type', 'assigned_object_id', 'pool')
+        ordering = ("assigned_object_type", "assigned_object_id", "pool")
 
     def __str__(self):
         return f"{self.assigned_object}: {self.pool}"
