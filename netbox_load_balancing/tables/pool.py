@@ -17,6 +17,7 @@ class PoolTable(NetBoxTable):
     listeners = ManyToManyColumn()
     disabled = tables.BooleanColumn()
     tags = TagColumn(url_name="plugins:netbox_load_balancing:pool_list")
+    algorythm = tables.Column(verbose_name=_("Algorithm"))
 
     class Meta(NetBoxTable.Meta):
         model = Pool

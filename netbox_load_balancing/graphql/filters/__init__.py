@@ -5,3 +5,4 @@ from .health_monitor import *
 from .listener import *
 from .pool import *
 from .member import *
+from .assignments import *

@@ -53,9 +53,10 @@ class PoolForm(TenancyForm, PrimaryModelForm):
         required=True,
     )
     algorythm = forms.ChoiceField(
+        label=_("Algorithm"),
         required=True,
         choices=PoolAlgorythmChoices,
-        help_text=_("Load Balancer algorythm for the pool"),
+        help_text=_("Load Balancer algorithm for the pool"),
     )
     session_persistence = forms.ChoiceField(
         required=False,
@@ -143,7 +144,9 @@ class PoolFilterForm(LocalConfigContextFilterForm, PrimaryModelFilterSetForm):
         queryset=Listener.objects.all(),
         required=False,
     )
-    algorythm = forms.ChoiceField(required=True, choices=PoolAlgorythmChoices)
+    algorythm = forms.ChoiceField(
+        label=_("Algorithm"), required=True, choices=PoolAlgorythmChoices
+    )
     session_persistence = forms.ChoiceField(
         required=False, choices=PoolSessionPersistenceChoices
     )
@@ -167,8 +170,9 @@ class PoolImportForm(PrimaryModelImportForm):
         help_text=_("Listener (Name)"),
     )
     algorythm = CSVChoiceField(
+        label=_("Algorithm"),
         choices=PoolAlgorythmChoices,
-        help_text=_("Load Balancer algorythm for the pool"),
+        help_text=_("Load Balancer algorithm for the pool"),
         required=False,
     )
     session_persistence = CSVChoiceField(
@@ -233,9 +237,10 @@ class PoolBulkEditForm(PrimaryModelBulkEditForm):
         required=False,
     )
     algorythm = forms.ChoiceField(
+        label=_("Algorithm"),
         required=False,
         choices=PoolAlgorythmChoices,
-        help_text=_("Load Balancer algorythm for the pool"),
+        help_text=_("Load Balancer algorithm for the pool"),
     )
     session_persistence = forms.ChoiceField(
         required=False,

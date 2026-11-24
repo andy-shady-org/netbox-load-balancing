@@ -74,9 +74,9 @@ class PoolFilterSet(
         qs_filter = (
             Q(name__icontains=value)
             | Q(description__icontains=value)
-            | Q(persistence_timeout=value)
-            | Q(dbackup_timeout=value)
-            | Q(member_port=value)
+            | Q(persistence_timeout__iexact=value)
+            | Q(backup_timeout__iexact=value)
+            | Q(member_port__iexact=value)
         )
         return queryset.filter(qs_filter)
 

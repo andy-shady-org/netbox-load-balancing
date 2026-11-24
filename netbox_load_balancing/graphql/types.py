@@ -9,21 +9,31 @@ from tenancy.graphql.types import TenantType
 
 from netbox_load_balancing.models import (
     LBService,
+    LBServiceAssignment,
     Listener,
     HealthMonitor,
+    HealthMonitorAssignment,
     Pool,
+    PoolAssignment,
     Member,
+    MemberAssignment,
     VirtualIPPool,
+    VirtualIPPoolAssignment,
     VirtualIP,
 )
 
 from .filters import (
     NetBoxLoadBalancingLBServiceFilter,
+    NetBoxLoadBalancingLBServiceAssignmentFilter,
     NetBoxLoadBalancingListenerFilter,
     NetBoxLoadBalancingHealthMonitorFilter,
+    NetBoxLoadBalancingHealthMonitorAssignmentsFilter,
     NetBoxLoadBalancingPoolFilter,
+    NetBoxLoadBalancingPoolAssignmentFilter,
     NetBoxLoadBalancingMemberFilter,
+    NetBoxLoadBalancingMemberAssignmentFilter,
     NetBoxLoadBalancingVirtualIPPoolFilter,
+    NetBoxLoadBalancingVirtualIPPoolAssignmentFilter,
     NetBoxLoadBalancingVirtualIPFilter,
 )
 
@@ -55,10 +65,10 @@ class NetBoxLoadBalancingListenerType(PrimaryObjectType):
     protocol: str
     source_nat: bool
     use_proxy_port: bool
-    max_clients: int
-    max_requests: int
-    client_timeout: int
-    server_timeout: int
+    max_clients: int | None
+    max_requests: int | None
+    client_timeout: int | None
+    server_timeout: int | None
     client_keepalive: bool
     surge_protection: bool
     tcp_buffering: bool
@@ -77,7 +87,7 @@ class NetBoxLoadBalancingHealthMonitorType(PrimaryObjectType):
     http_response: str | None
     monitor_host: str | None
     http_version: str
-    monitor_port: int
+    monitor_port: int | None
     http_secure: bool
     http_response_codes: List[int] | None
     probe_interval: int | None
@@ -101,9 +111,9 @@ class NetBoxLoadBalancingPoolType(PrimaryObjectType):
     algorythm: str
     session_persistence: str
     backup_persistence: str
-    persistence_timeout: int
-    backup_timeout: int
-    member_port: int
+    persistence_timeout: int | None
+    backup_timeout: int | None
+    member_port: int | None
     disabled: bool
 
 
@@ -144,3 +154,111 @@ class NetBoxLoadBalancingVirtualIPType(PrimaryObjectType):
     dns_name: str
     disabled: bool
     route_health_injection: bool
+
+
+@strawberry_django.type(
+    HealthMonitorAssignment,
+    fields="__all__",
+    filters=NetBoxLoadBalancingHealthMonitorAssignmentsFilter,
+)
+class NetBoxLoadBalancingHealthMonitorAssignmentType(PrimaryObjectType):
+    monitor: (
+        Annotated[
+            "NetBoxLoadBalancingHealthMonitorType",
+            strawberry.lazy("netbox_load_balancing.graphql.types"),
+        ]
+        | None
+    )
+    assigned_object: (
+        Annotated[
+            "NetBoxLoadBalancingPoolType",
+            strawberry.lazy("netbox_load_balancing.graphql.types"),
+        ]
+        | None
+    )
+
+
+@strawberry_django.type(
+    LBServiceAssignment,
+    fields="__all__",
+    filters=NetBoxLoadBalancingLBServiceAssignmentFilter,
+)
+class NetBoxLoadBalancingLBServiceAssignmentType(PrimaryObjectType):
+    service: (
+        Annotated[
+            "NetBoxLoadBalancingLBServiceType",
+            strawberry.lazy("netbox_load_balancing.graphql.types"),
+        ]
+        | None
+    )
+    assigned_object: (
+        Annotated[
+            "NetBoxLoadBalancingVirtualIPType",
+            strawberry.lazy("netbox_load_balancing.graphql.types"),
+        ]
+        | None
+    )
+
+
+@strawberry_django.type(
+    MemberAssignment,
+    fields="__all__",
+    filters=NetBoxLoadBalancingMemberAssignmentFilter,
+)
+class NetBoxLoadBalancingMemberAssignmentType(PrimaryObjectType):
+    member: (
+        Annotated[
+            "NetBoxLoadBalancingMemberType",
+            strawberry.lazy("netbox_load_balancing.graphql.types"),
+        ]
+        | None
+    )
+    assigned_object: (
+        Annotated[
+            "NetBoxLoadBalancingPoolType",
+            strawberry.lazy("netbox_load_balancing.graphql.types"),
+        ]
+        | None
+    )
+
+
+@strawberry_django.type(
+    PoolAssignment, fields="__all__", filters=NetBoxLoadBalancingPoolAssignmentFilter
+)
+class NetBoxLoadBalancingPoolAssignmentType(PrimaryObjectType):
+    pool: (
+        Annotated[
+            "NetBoxLoadBalancingPoolType",
+            strawberry.lazy("netbox_load_balancing.graphql.types"),
+        ]
+        | None
+    )
+    assigned_object: (
+        Annotated[
+            "NetBoxLoadBalancingLBServiceType",
+            strawberry.lazy("netbox_load_balancing.graphql.types"),
+        ]
+        | None
+    )
+
+
+@strawberry_django.type(
+    VirtualIPPoolAssignment,
+    fields="__all__",
+    filters=NetBoxLoadBalancingVirtualIPPoolAssignmentFilter,
+)
+class NetBoxLoadBalancingVirtualIPPoolAssignmentType(PrimaryObjectType):
+    virtual_pool: (
+        Annotated[
+            "NetBoxLoadBalancingVirtualIPPoolType",
+            strawberry.lazy("netbox_load_balancing.graphql.types"),
+        ]
+        | None
+    )
+    assigned_object: (
+        Annotated[
+            "PrefixType",
+            strawberry.lazy("ipam.graphql.types"),
+        ]
+        | None
+    )

@@ -6,6 +6,11 @@ from .schema import (
     NetBoxLoadBalancingHealthMonitorQuery,
     NetBoxLoadBalancingVirtualIPPoolQuery,
     NetBoxLoadBalancingVirtualIPQuery,
+    NetBoxLoadBalancingHealthMonitorAssignmentQuery,
+    NetBoxLoadBalancingMemberAssignmentQuery,
+    NetBoxLoadBalancingPoolAssignmentQuery,
+    NetBoxLoadBalancingLBServiceAssignmentQuery,
+    NetBoxLoadBalancingVirtualIPPoolAssignmentQuery,
 )
 
 schema = [
@@ -16,4 +21,9 @@ schema = [
     NetBoxLoadBalancingHealthMonitorQuery,
     NetBoxLoadBalancingVirtualIPPoolQuery,
     NetBoxLoadBalancingVirtualIPQuery,
+    NetBoxLoadBalancingHealthMonitorAssignmentQuery,
+    NetBoxLoadBalancingMemberAssignmentQuery,
+    NetBoxLoadBalancingPoolAssignmentQuery,
+    NetBoxLoadBalancingLBServiceAssignmentQuery,
+    NetBoxLoadBalancingVirtualIPPoolAssignmentQuery,
 ]

@@ -12,11 +12,11 @@ app_name = "netbox_load_balancing"
 urlpatterns = [
     # Services
     path(
-        "service/",
+        "services/",
         include(get_model_urls("netbox_load_balancing", "lbservice", detail=False)),
     ),
     path(
-        "service/<int:pk>/",
+        "services/<int:pk>/",
         include(get_model_urls("netbox_load_balancing", "lbservice")),
     ),
     # LBService Assignments
@@ -32,11 +32,11 @@ urlpatterns = [
     ),
     # Virtual Pools
     path(
-        "virtual-pool/",
+        "virtual-pools/",
         include(get_model_urls("netbox_load_balancing", "virtualippool", detail=False)),
     ),
     path(
-        "virtual-pool/<int:pk>/",
+        "virtual-pools/<int:pk>/",
         include(get_model_urls("netbox_load_balancing", "virtualippool")),
     ),
     # Virtual Pool Assignments
@@ -54,29 +54,29 @@ urlpatterns = [
     ),
     # Virtual Addresses
     path(
-        "virtual-address/",
+        "virtual-addresses/",
         include(get_model_urls("netbox_load_balancing", "virtualip", detail=False)),
     ),
     path(
-        "virtual-address/<int:pk>/",
+        "virtual-addresses/<int:pk>/",
         include(get_model_urls("netbox_load_balancing", "virtualip")),
     ),
     # Listeners
     path(
-        "listener/",
+        "listeners/",
         include(get_model_urls("netbox_load_balancing", "listener", detail=False)),
     ),
     path(
-        "istener/<int:pk>/",
+        "listeners/<int:pk>/",
         include(get_model_urls("netbox_load_balancing", "listener")),
     ),
     # Pools
     path(
-        "pool/",
+        "pools/",
         include(get_model_urls("netbox_load_balancing", "pool", detail=False)),
     ),
     path(
-        "pool/<int:pk>/",
+        "pools/<int:pk>/",
         include(get_model_urls("netbox_load_balancing", "pool")),
     ),
     # Pool Assignments
@@ -92,11 +92,11 @@ urlpatterns = [
     ),
     # Health Monitors
     path(
-        "health-monitor/",
+        "health-monitors/",
         include(get_model_urls("netbox_load_balancing", "healthmonitor", detail=False)),
     ),
     path(
-        "health-monitor/<int:pk>/",
+        "health-monitors/<int:pk>/",
         include(get_model_urls("netbox_load_balancing", "healthmonitor")),
     ),
     # Health Monitor Assignments
@@ -114,11 +114,11 @@ urlpatterns = [
     ),
     # Members
     path(
-        "member/",
+        "members/",
         include(get_model_urls("netbox_load_balancing", "member", detail=False)),
     ),
     path(
-        "member/<int:pk>/",
+        "members/<int:pk>/",
         include(get_model_urls("netbox_load_balancing", "member")),
     ),
     # Health Monitor Assignments

@@ -39,6 +39,7 @@ class Pool(LBServiceConfigContextModelMixin, ContactsMixin, PrimaryModel):
         blank=True,
     )
     algorythm = models.CharField(
+        verbose_name=_("Algorithm"),
         max_length=255,
         choices=PoolAlgorythmChoices,
         default=PoolAlgorythmChoices.LEAST_CONNECTION,

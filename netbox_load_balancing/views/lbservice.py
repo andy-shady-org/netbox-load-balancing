@@ -12,10 +12,16 @@ from virtualization.tables import VirtualMachineTable
 from netbox_load_balancing.tables import (
     LBServiceTable,
     VirtualIPTable,
+    ListenerTable,
 )
 from netbox_load_balancing.filtersets import LBServiceFilterSet
 
-from netbox_load_balancing.models import LBService, LBServiceAssignment, VirtualIP
+from netbox_load_balancing.models import (
+    LBService,
+    LBServiceAssignment,
+    VirtualIP,
+    Listener,
+)
 from netbox_load_balancing.forms import (
     LBServiceFilterForm,
     LBServiceForm,
@@ -66,11 +72,20 @@ class LBServiceView(generic.ObjectView):
             orderable=False,
         )
         virtual_machine_assignments_table.configure(request)
+
+        listener_assignments_table = ListenerTable(
+            Listener.objects.filter(service=instance),
+            exclude=("service",),
+            orderable=False,
+        )
+        listener_assignments_table.configure(request)
+
         return {
             "vip_assignment_table": vip_assignments_table,
             "device_assignments_table": device_assignments_table,
             "virtual_device_assignments_table": virtual_device_assignments_table,
             "virtual_machine_assignments_table": virtual_machine_assignments_table,
+            "listener_assignments_table": listener_assignments_table,
         }
 
 
