@@ -86,11 +86,13 @@ class NetBoxLoadBalancingVirtualIPQuery:
         strawberry_django.field()
     )
 
+
 @strawberry.type(name="Query")
 class NetBoxLoadBalancingHealthMonitorAssignmentQuery:
     netbox_load_balancing_healthmonitor_assignments: List[
         NetBoxLoadBalancingHealthMonitorAssignmentType
     ] = strawberry_django.field()
+
 
 @strawberry.type(name="Query")
 class NetBoxLoadBalancingLBServiceAssignmentQuery:
@@ -98,17 +100,20 @@ class NetBoxLoadBalancingLBServiceAssignmentQuery:
         NetBoxLoadBalancingLBServiceAssignmentType
     ] = strawberry_django.field()
 
+
 @strawberry.type(name="Query")
 class NetBoxLoadBalancingMemberAssignmentQuery:
     netbox_load_balancing_member_assignments: List[
         NetBoxLoadBalancingMemberAssignmentType
     ] = strawberry_django.field()
 
+
 @strawberry.type(name="Query")
 class NetBoxLoadBalancingPoolAssignmentQuery:
     netbox_load_balancing_pool_assignments: List[
         NetBoxLoadBalancingPoolAssignmentType
     ] = strawberry_django.field()
+
 
 @strawberry.type(name="Query")
 class NetBoxLoadBalancingVirtualIPPoolAssignmentQuery:

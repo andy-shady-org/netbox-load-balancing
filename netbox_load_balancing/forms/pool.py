@@ -144,7 +144,9 @@ class PoolFilterForm(LocalConfigContextFilterForm, PrimaryModelFilterSetForm):
         queryset=Listener.objects.all(),
         required=False,
     )
-    algorythm = forms.ChoiceField(label=_("Algorithm"), required=True, choices=PoolAlgorythmChoices)
+    algorythm = forms.ChoiceField(
+        label=_("Algorithm"), required=True, choices=PoolAlgorythmChoices
+    )
     session_persistence = forms.ChoiceField(
         required=False, choices=PoolSessionPersistenceChoices
     )

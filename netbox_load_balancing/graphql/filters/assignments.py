@@ -8,8 +8,13 @@ from tenancy.graphql.filter_mixins import ContactFilterMixin, TenancyFilterMixin
 from extras.graphql.filter_mixins import ConfigContextFilterMixin
 
 from netbox_load_balancing.models import (
-    HealthMonitorAssignment, LBServiceAssignment, MemberAssignment, PoolAssignment, VirtualIPPoolAssignment
+    HealthMonitorAssignment,
+    LBServiceAssignment,
+    MemberAssignment,
+    PoolAssignment,
+    VirtualIPPoolAssignment,
 )
+
 
 @strawberry_django.filter(HealthMonitorAssignment, lookups=True)
 class NetBoxLoadBalancingHealthMonitorAssignmentsFilter(
@@ -19,14 +24,17 @@ class NetBoxLoadBalancingHealthMonitorAssignmentsFilter(
         Annotated[
             "NetBoxLoadBalancingHealthMonitorFilter",
             strawberry.lazy("netbox_load_balancing.graphql.filters"),
-        ] | None
+        ]
+        | None
     ) = strawberry_django.filter_field()
     assigned_object: (
         Annotated[
             "NetBoxLoadBalancingPoolFilter",
             strawberry.lazy("netbox_load_balancing.graphql.filters"),
-        ] | None
+        ]
+        | None
     ) = strawberry_django.filter_field()
+
 
 @strawberry_django.filter(LBServiceAssignment, lookups=True)
 class NetBoxLoadBalancingLBServiceAssignmentFilter(
@@ -36,14 +44,17 @@ class NetBoxLoadBalancingLBServiceAssignmentFilter(
         Annotated[
             "NetBoxLoadBalancingLBServiceFilter",
             strawberry.lazy("netbox_load_balancing.graphql.filters"),
-        ] | None
+        ]
+        | None
     ) = strawberry_django.filter_field()
     assigned_object: (
         Annotated[
             "NetBoxLoadBalancingVirtualIPFilter",
             strawberry.lazy("netbox_load_balancing.graphql.filters"),
-        ] | None
+        ]
+        | None
     ) = strawberry_django.filter_field()
+
 
 @strawberry_django.filter(MemberAssignment, lookups=True)
 class NetBoxLoadBalancingMemberAssignmentFilter(
@@ -53,14 +64,17 @@ class NetBoxLoadBalancingMemberAssignmentFilter(
         Annotated[
             "NetBoxLoadBalancingMemberFilter",
             strawberry.lazy("netbox_load_balancing.graphql.filters"),
-        ] | None
+        ]
+        | None
     ) = strawberry_django.filter_field()
     assigned_object: (
         Annotated[
             "NetBoxLoadBalancingPoolFilter",
             strawberry.lazy("netbox_load_balancing.graphql.filters"),
-        ] | None
+        ]
+        | None
     ) = strawberry_django.filter_field()
+
 
 @strawberry_django.filter(PoolAssignment, lookups=True)
 class NetBoxLoadBalancingPoolAssignmentFilter(
@@ -70,15 +84,18 @@ class NetBoxLoadBalancingPoolAssignmentFilter(
         Annotated[
             "NetBoxLoadBalancingHealthMonitorFilter",
             strawberry.lazy("netbox_load_balancing.graphql.filters"),
-        ] | None
+        ]
+        | None
     ) = strawberry_django.filter_field()
     assigned_object: (
         Annotated[
             "NetBoxLoadBalancingLBServiceFilter",
             strawberry.lazy("netbox_load_balancing.graphql.filters"),
-        ] | None
+        ]
+        | None
     ) = strawberry_django.filter_field()
-    
+
+
 @strawberry_django.filter(VirtualIPPoolAssignment, lookups=True)
 class NetBoxLoadBalancingVirtualIPPoolAssignmentFilter(
     ContactFilterMixin, TenancyFilterMixin, PrimaryModelFilter, ConfigContextFilterMixin
@@ -87,11 +104,13 @@ class NetBoxLoadBalancingVirtualIPPoolAssignmentFilter(
         Annotated[
             "NetBoxLoadBalancingVirtualIPPoolFilter",
             strawberry.lazy("netbox_load_balancing.graphql.filters"),
-        ] | None
+        ]
+        | None
     ) = strawberry_django.filter_field()
     assigned_object: (
         Annotated[
             "PrefixFilter",
             strawberry.lazy("ipam.graphql.filters"),
-        ] | None
+        ]
+        | None
     ) = strawberry_django.filter_field()

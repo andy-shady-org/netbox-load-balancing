@@ -16,7 +16,12 @@ from netbox_load_balancing.tables import (
 )
 from netbox_load_balancing.filtersets import LBServiceFilterSet
 
-from netbox_load_balancing.models import LBService, LBServiceAssignment, VirtualIP, Listener
+from netbox_load_balancing.models import (
+    LBService,
+    LBServiceAssignment,
+    VirtualIP,
+    Listener,
+)
 from netbox_load_balancing.forms import (
     LBServiceFilterForm,
     LBServiceForm,
